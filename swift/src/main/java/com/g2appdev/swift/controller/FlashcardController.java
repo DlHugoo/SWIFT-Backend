@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+//import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.g2appdev.swift.entity.FlashcardEntity;
 import com.g2appdev.swift.service.FlashcardService;
 
-@CrossOrigin(origins = "http://localhost:5174")
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/flashcard")
 public class FlashcardController {
@@ -40,9 +40,9 @@ public class FlashcardController {
     }
 
     
-    @PutMapping("/putFlashcardsDetails")
-    public FlashcardEntity putFlashcardsDetails(@RequestParam int flashcard_id, @RequestBody FlashcardEntity newFlashcardDetails) {
-    	return fserv.putFlashcardDetails(flashcard_id, newFlashcardDetails);
+    @PutMapping("/putFlashcardsDetails/{flashcard_id}")
+    public FlashcardEntity putFlashcardsDetails(@PathVariable int flashcard_id, @RequestBody FlashcardEntity newFlashcardDetails) {
+        return fserv.putFlashcardDetails(flashcard_id, newFlashcardDetails);
     }
     
     @DeleteMapping("/deleteFlashcardDetails/{flashcard_id}")
