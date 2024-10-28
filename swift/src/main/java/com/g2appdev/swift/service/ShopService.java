@@ -15,41 +15,44 @@ import com.g2appdev.swift.repository.ShopRepository;
 public class ShopService {
 	@Autowired
 	ShopRepository srepo;
-	
+
 	public ShopService() {
 		super();
 	}
+
 	public ShopEntity postShopRecord(ShopEntity shop) {
 		return srepo.save(shop);
-		}
-	public List<ShopEntity> getAllShop(){
+	}
+
+	public List<ShopEntity> getAllShop() {
 		return srepo.findAll();
 	}
-	
+
 	@SuppressWarnings("finally")
 	public ShopEntity putShopDetails(int itemId, ShopEntity newShopDetails) {
 		ShopEntity shop = new ShopEntity();
 		try {
 			shop = srepo.findById(itemId).get();
-			
+
 			shop.setItemName(newShopDetails.getItemName());
-			shop.setDescription(newShopDetails.getDescription());
 			shop.setItemCost(newShopDetails.getItemCost());
-			shop.setItemType(newShopDetails.getItemType());
-		
-		}catch(NoSuchElementException nex) {
+			shop.setItemUrl(newShopDetails.getItemUrl());
+
+		} catch (NoSuchElementException nex) {
 			throw new NameNotFoundException("Shop not found");
-		}finally {
+		} finally {
 			return srepo.save(shop);
 		}
 	}
+
 	public String deleteShop(int itemId) {
 		String msg = "";
-		if(srepo.findById(itemId).isPresent()) {
+		if (srepo.findById(itemId).isPresent()) {
 			srepo.deleteById(itemId);
 			msg = "Shop Record successfully deleted!";
-		}else {
-			msg = itemId+"Not Found!";
-		}return msg;
+		} else {
+			msg = itemId + "Not Found!";
+		}
+		return msg;
 	}
 }
