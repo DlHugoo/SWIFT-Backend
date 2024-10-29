@@ -48,13 +48,13 @@ public class TaskService {
 	}
 	
 	//DELETE
-	public String deleteTask(int id) {
+	public String deleteTask(int taskId) {
 		String msg = "";
-		if (trepo.findById(id).isPresent()) {
-			trepo.deleteById(id);
+		if (trepo.findById(taskId).isPresent()) {
+			trepo.deleteById(taskId);
 			msg = "Task record successfully deleted.";
 		} else {
-			msg = id + " NOT FOUND!";
+			msg = taskId + " NOT FOUND!";
 		}
 		return msg;
 	}

@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.g2appdev.swift.entity.TaskEntity;
 import com.g2appdev.swift.service.TaskService;
 
+
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping(method = RequestMethod.GET,path="/api/task")
 public class TaskController {
@@ -42,8 +45,9 @@ public class TaskController {
 		return sserv.putTaskDetails(id,newTaskDetails);
 	}
 	//DELETE
-	@DeleteMapping("/deleteTaskDetails/{id}")
-	public String deleteTask(@PathVariable int id) {
-		return sserv.deleteTask(id);
+	@DeleteMapping("/deleteTaskDetails/{taskId}")
+	public String deleteTask(@PathVariable int taskId) {
+	    System.out.println("Received delete request for task ID: " + taskId);
+	    return sserv.deleteTask(taskId);
 	}
 }
