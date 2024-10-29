@@ -86,7 +86,6 @@ public class UserController {
             response.put("userId", user.getUserID());
             response.put("username", user.getUsername());
             response.put("email", user.getEmail());
-            response.put("avatarId", user.getAvatarID());
             response.put("progressData", user.getProgressData());
             
             return ResponseEntity.ok(response);
