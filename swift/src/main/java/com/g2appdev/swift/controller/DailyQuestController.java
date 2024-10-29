@@ -3,6 +3,7 @@ package com.g2appdev.swift.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import com.g2appdev.swift.service.DailyQuestService;
 
 @RestController
 @RequestMapping(method = RequestMethod.GET,path="/api/dailyquest")
+@CrossOrigin(origins = "http://localhost:3000") // Allow requests from React frontend
 public class DailyQuestController {
 	@Autowired
 	DailyQuestService dserv;
