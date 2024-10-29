@@ -53,6 +53,7 @@ public class ProgressTrackingService {
 	}
 	
 	//Delete of CRUD
+			@SuppressWarnings("unused")
 			public String deleteProgressTracking(int id) {
 				String msg = "";
 				

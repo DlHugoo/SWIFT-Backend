@@ -53,6 +53,7 @@ public class DailyQuestService {
 	}
 	
 	//Delete of CRUD
+		@SuppressWarnings("unused")
 		public String deleteDailyQuest(int id) {
 			String msg = "";
 			
