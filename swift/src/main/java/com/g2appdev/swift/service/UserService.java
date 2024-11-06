@@ -1,6 +1,7 @@
 package com.g2appdev.swift.service;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,16 @@ public class UserService {
 	UserRepository urepo;
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+	
+	 // Regex pattern to check for at least 8 characters and at least one special character
+    private static final String PASSWORD_PATTERN = "^(?=.*[!@#$%^&*(),.?\":{}|<>])[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{8,}$";
+
+    // Password validation method
+    private void validatePassword(String password) {
+        if (password == null || !Pattern.matches(PASSWORD_PATTERN, password)) {
+            throw new RuntimeException("Password must be at least 8 characters long and contain at least one special character.");
+        }
+    }
 	
 	public UserService() {
 		super();
@@ -45,13 +56,17 @@ public class UserService {
 	    try {
 	        user = urepo.findById(userID).orElseThrow(() -> new RuntimeException("User not found"));
 	        logger.info("Updating details for user ID: {}", userID);
-
+	        
+	        if (!user.getEmail().equals(newUserDetails.getEmail()) && urepo.existsByEmail(newUserDetails.getEmail())) {
+	            throw new RuntimeException("Email already exists");
+	        }
 	        // Update fields only if they have new values
 	        user.setUsername(newUserDetails.getUsername());
 	        user.setEmail(newUserDetails.getEmail());
 
 	        // Preserve the existing password if a new one is not provided
 	        if (newUserDetails.getPassword() != null && !newUserDetails.getPassword().isEmpty()) {
+	        	validatePassword(newUserDetails.getPassword());
 	            user.setPassword(newUserDetails.getPassword());
 	        }
 	        
@@ -83,6 +98,13 @@ public class UserService {
 	        	logger.warn("Attempt to register with existing username: {}", userDTO.getUsername());
 	            throw new RuntimeException("Username already exists");
 	        }
+	        if (urepo.existsByEmail(userDTO.getEmail())) {
+	            throw new RuntimeException("Email already exists");
+	        }
+	        
+	        // Validate password
+	        validatePassword(userDTO.getPassword());
+	        
 	        // Set default values for new users
 	        UserEntity newUser = new UserEntity();
 	        newUser.setUsername(userDTO.getUsername());
@@ -114,5 +136,10 @@ public class UserService {
 	  public boolean existsByUsername(String username) {
 	      return urepo.existsByUsername(username);
 	  }
+	  
+	  // Method to check if email already exists
+	    public boolean existsByEmail(String email) {
+	        return urepo.existsByEmail(email);
+	   }
 	
 }
