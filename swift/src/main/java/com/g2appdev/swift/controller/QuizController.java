@@ -18,7 +18,7 @@ import com.g2appdev.swift.entity.QuizEntity;
 import com.g2appdev.swift.service.QuizService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/quiz")
 public class QuizController {
 	@Autowired

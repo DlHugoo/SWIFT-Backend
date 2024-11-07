@@ -11,6 +11,9 @@ public class FlashcardSetEntity {
     private String title;
     private String description;
 
+	@OneToOne(mappedBy = "flashcardset")
+	private QuizEntity quiz;
+
     public FlashcardSetEntity(){
         super();
     }
@@ -22,7 +25,11 @@ public class FlashcardSetEntity {
 		this.description = description;
 	}
 
-    public int getSetId() {
+	public void setSetId(int set_id){
+		this.set_id = set_id;
+	}
+
+	public int getSetId() {
 		return set_id;
 	}
 	

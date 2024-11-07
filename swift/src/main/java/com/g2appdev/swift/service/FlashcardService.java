@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.g2appdev.swift.entity.FlashcardEntity;
+import com.g2appdev.swift.entity.FlashcardSetEntity;
 import com.g2appdev.swift.repository.FlashcardRepository;
 
 @Service
@@ -54,5 +55,10 @@ public class FlashcardService {
 		}else
 			msg = flashcard_id + "NOT found!";
 		return msg;
+	}
+
+	public FlashcardSetEntity postFlashcardSetRecord(FlashcardSetEntity flashcardset) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'postFlashcardSetRecord'");
 	}
 }
