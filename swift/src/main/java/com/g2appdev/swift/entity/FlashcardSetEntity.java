@@ -1,5 +1,7 @@
 package com.g2appdev.swift.entity;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -13,6 +15,10 @@ public class FlashcardSetEntity {
 
 	@OneToOne(mappedBy = "flashcardset")
 	private QuizEntity quiz;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "flashcardset", orphanRemoval = true,
+	cascade = CascadeType.ALL)
+	private List<FlashcardEntity> flashcard;
 
     public FlashcardSetEntity(){
         super();

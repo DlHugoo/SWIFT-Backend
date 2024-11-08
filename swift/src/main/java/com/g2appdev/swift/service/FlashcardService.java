@@ -11,19 +11,37 @@ import org.springframework.stereotype.Service;
 import com.g2appdev.swift.entity.FlashcardEntity;
 import com.g2appdev.swift.entity.FlashcardSetEntity;
 import com.g2appdev.swift.repository.FlashcardRepository;
+import com.g2appdev.swift.repository.FlashcardSetRepository;
 
 @Service
 public class FlashcardService {
 
 	@Autowired
 	FlashcardRepository frepo;
+
+	@Autowired
+    FlashcardSetRepository fsrepo;
+	
 	
 	public FlashcardService() {
 		super();
 	}
 	
 	public FlashcardEntity postFlashcardRecord(FlashcardEntity flashcard) {
-		return frepo.save(flashcard);
+		        // Check if the flashcard set associated with the quiz is not null
+				if (flashcard.getFlashcardSet() == null) {
+					throw new IllegalArgumentException("FlashcardSet cannot be null.");
+				}
+				
+				// Check if the flashcard set associated with the quiz exists in the database
+				FlashcardSetEntity flashcardSet = fsrepo.findById(flashcard.getFlashcardSet().getSetId())
+						.orElseThrow(() -> new NoSuchElementException("FlashcardSet with ID " + flashcard.getFlashcardSet().getSetId() + " does not exist."));
+				
+				// Set the flashcard set in the quiz (this step is optional as it's already done)
+				flashcard.setFlashcardSet(flashcardSet);
+				
+				// Save and return the quiz record
+				return frepo.save(flashcard);
 	}
 	
 	public List<FlashcardEntity>getAllFlashcards(){
@@ -32,17 +50,18 @@ public class FlashcardService {
 	
 	@SuppressWarnings("finally")
 	public FlashcardEntity putFlashcardDetails(int flashcard_id, FlashcardEntity newFlashCardDetails) {
-		FlashcardEntity student = new FlashcardEntity();
+		FlashcardEntity flashcard = new FlashcardEntity();
 		try {
 			//search the id number
-			student = frepo.findById(flashcard_id).get();
+			flashcard = frepo.findById(flashcard_id).get();
 			
-			student.setTerm(newFlashCardDetails.getTerm());
-			student.setDefinition(newFlashCardDetails.getDefinition());
+			
+			flashcard.setTerm(newFlashCardDetails.getTerm());
+			flashcard.setDefinition(newFlashCardDetails.getDefinition());
 		}catch(NoSuchElementException nex) {
 			throw new NameNotFoundException ("Flashcard " + flashcard_id + "not found");
 		}finally {
-			return frepo.save(student);
+			return frepo.save(flashcard);
 		}
 	}
 	

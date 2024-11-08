@@ -10,6 +10,19 @@ public class FlashcardEntity {
 	
 	private String term;
 	private String definition;
+
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "set_id")
+	private FlashcardSetEntity flashcardset;
+
+	public FlashcardSetEntity getFlashcardSet() {
+        return flashcardset;
+    }
+
+    public void setFlashcardSet(FlashcardSetEntity flashcardset) {
+        this.flashcardset = flashcardset;
+    }
+
 	
 	public FlashcardEntity(){
 		super();
