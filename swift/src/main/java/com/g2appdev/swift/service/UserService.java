@@ -78,6 +78,7 @@ public class UserService {
 	}
 	
 	//Delete of CRUD
+	@SuppressWarnings("unused")
 	public String deleteUser(int userID) {
 		String msg = "";
 		if (urepo.findById(userID) != null ) {

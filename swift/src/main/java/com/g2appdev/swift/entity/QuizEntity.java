@@ -11,6 +11,8 @@ import jakarta.persistence.OneToOne;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 public class QuizEntity {
     @Id
@@ -21,6 +23,11 @@ public class QuizEntity {
     @JoinColumn(name = "set_id")
     private FlashcardSetEntity flashcardset;
 
+    @JsonProperty("flashcardSetTitle")
+    public String getFlashcardSetTitle() {
+        return flashcardset != null ? flashcardset.getTitle() : null;
+    }
+
     public FlashcardSetEntity getFlashcardSet() {
         return flashcardset;
     }
@@ -30,7 +37,7 @@ public class QuizEntity {
     }
 
     private String title;
-    private int score;
+    private int totalScore;
 
     @ElementCollection
     private List<Question> questions;
@@ -41,12 +48,12 @@ public class QuizEntity {
     }
 
     // Constructor with parameters
-    public QuizEntity(int quiz_id, String title, List<Question> questions, int score) {
+    public QuizEntity(int quiz_id, String title, List<Question> questions) {
         super();
         this.quiz_id = quiz_id;
         this.title = title;
         this.questions = questions;
-        this.score = score;
+        this.totalScore = calculateTotalScore(); // Calculate total score based on questions
     }
 
     // Getters and setters
@@ -72,14 +79,20 @@ public class QuizEntity {
 
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
+        this.totalScore = calculateTotalScore(); // Recalculate total score if questions change
     }
 
-    public int getScore() {
-        return score;
+    public int getTotalScore() {
+        return totalScore;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setTotalScore(int totalScore){
+        this.totalScore = totalScore;
+    }
+
+    // Helper method to calculate total score
+    private int calculateTotalScore() {
+        return questions.stream().mapToInt(Question::getScore).sum();
     }
 
     // Embeddable class for Question
@@ -88,6 +101,7 @@ public class QuizEntity {
         private String text;
         private List<String> options;
         private int correctAnswerIndex;
+        private int score; // Add score field for individual question
 
         // Default constructor
         public Question() {
@@ -95,10 +109,11 @@ public class QuizEntity {
         }
 
         // Constructor with parameters
-        public Question(String text, List<String> options, int correctAnswerIndex) {
+        public Question(String text, List<String> options, int correctAnswerIndex, int score) {
             this.text = text;
             this.options = options;
             this.correctAnswerIndex = correctAnswerIndex;
+            this.score = score; // Set score for the question
         }
 
         // Getters and setters
@@ -124,6 +139,14 @@ public class QuizEntity {
 
         public void setCorrectAnswerIndex(int correctAnswerIndex) {
             this.correctAnswerIndex = correctAnswerIndex;
+        }
+
+        public int getScore() {
+            return score;
+        }
+
+        public void setScore(int score) {
+            this.score = score;
         }
     }
 }
