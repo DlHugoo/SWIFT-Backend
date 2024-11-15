@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.g2appdev.swift.entity.FlashcardSetEntity;
 import com.g2appdev.swift.entity.QuizEntity;
+import com.g2appdev.swift.entity.UserEntity;
 import com.g2appdev.swift.repository.FlashcardSetRepository;
+import com.g2appdev.swift.repository.UserRepository; // Assuming you have this repository for UserEntity
 
 @Service
 public class FlashcardSetService {
@@ -19,47 +21,64 @@ public class FlashcardSetService {
     @Autowired
     FlashcardSetRepository fsrepo;
 
-    public FlashcardSetService(){
+    @Autowired
+    UserRepository userrepo; // Inject the User repository to access UserEntity
+
+    public FlashcardSetService() {
         super();
     }
 
-    public FlashcardSetEntity postFlashcardSetRecord(FlashcardSetEntity flashcardset) {
-		return fsrepo.save(flashcardset);
+    // Post method to create a FlashcardSet and associate it with a User
+    public FlashcardSetEntity postFlashcardSetRecord(FlashcardSetEntity flashcardset, int userID) {
+        // Fetch the user from the database
+        UserEntity user = userrepo.findById(userID).orElseThrow(() -> new NoSuchElementException("User not found"));
+        
+        // Set the user for the FlashcardSet
+        flashcardset.setUser(user);
+        
+        // Save and return the FlashcardSet
+        return fsrepo.save(flashcardset);
+    }
+
+    // Get all FlashcardSets
+    public List<FlashcardSetEntity> getAllFlashcardSets() {
+        return fsrepo.findAll();
+    }
+
+	public List<FlashcardSetEntity> getFlashcardSetsByUser(int userID) {
+		return fsrepo.findByUserUserID(userID); // Assuming your repo has this query method
 	}
 
-	public List<FlashcardSetEntity>getAllFlashcardSets(){
-		return fsrepo.findAll();
-	}
+    // Update method to edit FlashcardSet details
+    @SuppressWarnings("finally")
+    public FlashcardSetEntity putFlashcardSetDetails(int set_id, FlashcardSetEntity newFlashCardSetDetails) {
+        FlashcardSetEntity student = new FlashcardSetEntity();
+        try {
+            student = fsrepo.findById(set_id).get();
+            
+            student.setTitle(newFlashCardSetDetails.getTitle());
+            student.setDescription(newFlashCardSetDetails.getDescription());
+            // Optionally, handle user update if necessary
+        } catch (NoSuchElementException nex) {
+            throw new NameNotFoundException("Flashcard Set " + set_id + " not found");
+        } finally {
+            return fsrepo.save(student);
+        }
+    }
 
-	@SuppressWarnings("finally")
-	public FlashcardSetEntity putFlashcardSetDetails(int set_id, FlashcardSetEntity newFlashCardSetDetails) {
-		FlashcardSetEntity student = new FlashcardSetEntity();
-		try {
-			//search the id number
-			student = fsrepo.findById(set_id).get();
-			
-			student.setTitle(newFlashCardSetDetails.getTitle());
-			student.setDescription(newFlashCardSetDetails.getDescription());
-		}catch(NoSuchElementException nex) {
-			throw new NameNotFoundException ("Flashcard Set " + set_id + "not found");
-		}finally {
-			return fsrepo.save(student);
-		}
-	}
-
-	@SuppressWarnings("unused")
-	public String deleteFlashcardSet(int set_id) {
-		String msg = "";
-		if(fsrepo.findById(set_id) != null) {
-			fsrepo.deleteById(set_id);	
-			msg = "Flashcard Set Record successfully deleted";
-		}else
-			msg = set_id + "NOT found!";
-		return msg;
-	}
+    // Delete FlashcardSet
+    public String deleteFlashcardSet(int set_id) {
+        String msg = "";
+        if (fsrepo.findById(set_id).isPresent()) {
+            fsrepo.deleteById(set_id);
+            msg = "Flashcard Set Record successfully deleted";
+        } else {
+            msg = set_id + " NOT found!";
+        }
+        return msg;
+    }
 
     public static Optional<QuizEntity> findById(int setId) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findById'");
     }
 }
