@@ -2,8 +2,6 @@ package com.g2appdev.swift.entity;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,7 +23,6 @@ public class UserEntity {
     private int progressData = 0; // Default progress
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonManagedReference 
     private List<FlashcardSetEntity> flashcardSets;
 
     public UserEntity() {
