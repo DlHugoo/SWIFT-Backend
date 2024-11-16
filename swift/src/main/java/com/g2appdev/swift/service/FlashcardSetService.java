@@ -3,12 +3,14 @@ package com.g2appdev.swift.service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.naming.NameNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.g2appdev.swift.dto.FlashcardSetDTO;
 import com.g2appdev.swift.entity.FlashcardSetEntity;
 import com.g2appdev.swift.entity.QuizEntity;
 import com.g2appdev.swift.entity.UserEntity;
@@ -45,10 +47,17 @@ public class FlashcardSetService {
         return fsrepo.findAll();
     }
 
-	public List<FlashcardSetEntity> getFlashcardSetsByUser(int userID) {
-		return fsrepo.findByUserUserID(userID); // Assuming your repo has this query method
-	}
-
+	public List<FlashcardSetDTO> getFlashcardSetsByUser(int userID) {
+        List<FlashcardSetEntity> entities = fsrepo.findByUserUserID(userID); // Example query
+        return entities.stream()
+                .map(entity -> new FlashcardSetDTO(
+                        entity.getSetId(),
+                        entity.getTitle(),
+                        entity.getDescription(),
+                        entity.getUserID())) // Convenience method from step 1
+                .collect(Collectors.toList());
+    }
+    
     // Update method to edit FlashcardSet details
     @SuppressWarnings("finally")
     public FlashcardSetEntity putFlashcardSetDetails(int set_id, FlashcardSetEntity newFlashCardSetDetails) {

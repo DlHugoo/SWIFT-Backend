@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping; // For getting th
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.g2appdev.swift.dto.FlashcardSetDTO;
 import com.g2appdev.swift.entity.FlashcardSetEntity;
 import com.g2appdev.swift.service.FlashcardSetService;
 
@@ -39,7 +40,7 @@ public class FlashcardSetController {
     }
 
     @GetMapping("/getFlashcardSetsByUser")
-    public List<FlashcardSetEntity> getFlashcardSetsByUser(@RequestParam("userID") int userID) {
+    public List<FlashcardSetDTO> getFlashcardSetsByUser(@RequestParam int userID) {
         return fsserv.getFlashcardSetsByUser(userID);
     }
 

@@ -67,4 +67,10 @@ public class FlashcardSetEntity {
     public void setUser(UserEntity user) {
         this.user = user;
     }
+
+    @Transient
+    public int getUserID() {
+        return user != null ? user.getUserID() : 0; // Assuming UserEntity has getUserId()
+    }
+
 }
