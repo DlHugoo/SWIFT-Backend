@@ -1,5 +1,7 @@
 package com.g2appdev.swift.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 //import java.util.List;
 @Entity
@@ -13,6 +15,7 @@ public class FlashcardEntity {
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "set_id")
+	@JsonBackReference // Prevents infinite recursion with FlashcardSetEntity
 	private FlashcardSetEntity flashcardset;
 
 	public FlashcardSetEntity getFlashcardSet() {

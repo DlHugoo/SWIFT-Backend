@@ -2,6 +2,10 @@ package com.g2appdev.swift.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -15,13 +19,16 @@ public class FlashcardSetEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userID") // Foreign key to UserEntity
+    @JsonBackReference
     private UserEntity user;
 
     @OneToOne(mappedBy = "flashcardset")
+    @JsonIgnoreProperties("flashcardset")
     private QuizEntity quiz;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "flashcardset", orphanRemoval = true,
     cascade = CascadeType.ALL)
+    @JsonManagedReference // Allows serialization of flashcards
     private List<FlashcardEntity> flashcard;
 
     public FlashcardSetEntity() {

@@ -1,5 +1,10 @@
 package com.g2appdev.swift.entity;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
@@ -9,10 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 @Entity
 public class QuizEntity {
     @Id
@@ -21,6 +22,7 @@ public class QuizEntity {
 
     @OneToOne
     @JoinColumn(name = "set_id")
+    @JsonBackReference // Prevents recursion issues
     private FlashcardSetEntity flashcardset;
 
     @JsonProperty("flashcardSetTitle")
