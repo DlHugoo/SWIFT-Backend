@@ -44,6 +44,13 @@ public class TaskController {
 	public TaskEntity putTaskDetails(@RequestParam int id, @RequestBody TaskEntity newTaskDetails) {
 		return sserv.putTaskDetails(id,newTaskDetails);
 	}
+	
+	// UPDATE Task Status
+	@PutMapping("/updateTaskStatus")
+	public TaskEntity updateTaskStatus(@RequestParam int id, @RequestParam boolean status) {
+	    return sserv.updateTaskStatus(id, status);
+	}
+	
 	//DELETE
 	@DeleteMapping("/deleteTaskDetails/{taskId}")
 	public String deleteTask(@PathVariable int taskId) {
