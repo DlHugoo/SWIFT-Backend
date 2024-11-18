@@ -11,7 +11,11 @@ import org.springframework.stereotype.Service;
 
 import com.g2appdev.swift.entity.FlashcardSetEntity;
 import com.g2appdev.swift.entity.QuizEntity;
+import com.g2appdev.swift.entity.UserEntity;
 import com.g2appdev.swift.repository.FlashcardSetRepository;
+import com.g2appdev.swift.repository.UserRepository;
+
+
 
 @Service
 public class FlashcardSetService {
@@ -19,11 +23,22 @@ public class FlashcardSetService {
     @Autowired
     FlashcardSetRepository fsrepo;
 
+	@Autowired
+    UserRepository urepo;
+
     public FlashcardSetService(){
         super();
     }
 
     public FlashcardSetEntity postFlashcardSetRecord(FlashcardSetEntity flashcardset) {
+
+		if (flashcardset.getUser() == null) {
+			throw new IllegalArgumentException("User cannot be null.");
+		}
+		UserEntity user = urepo.findById(flashcardset.getUser().getUserID())
+				.orElseThrow(() -> new NoSuchElementException("FlashcardSet with ID " + flashcardset.getUser().getUserID() + " does not exist."));
+				flashcardset.setUser(user);
+
 		return fsrepo.save(flashcardset);
 	}
 
