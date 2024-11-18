@@ -21,7 +21,7 @@ public class ShopEntity {
 	private String itemUrl;
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "inventoryId")
-	private InventoryEntity inventories;
+	private InventoryEntity inventory;
 
 	public ShopEntity() {
 
@@ -66,10 +66,10 @@ public class ShopEntity {
 	}
 
 	public InventoryEntity getInventory() {
-		return inventories;
+		return inventory;
 	}
 
-	public void setInventroy(InventoryEntity inventories) {
-		this.inventories = inventories;
+	public void setInventroy(InventoryEntity inventory) {
+		this.inventory = inventory;
 	}
 }
