@@ -47,6 +47,13 @@ public class TaskService {
 		}
 	}
 	
+	//UPDATE STATUS
+	public TaskEntity updateTaskStatus(int id, boolean status) {
+	    TaskEntity task = trepo.findById(id).orElseThrow(() -> new NoSuchElementException("Task " + id + " not found."));
+	    task.setStatus(status); // Update only the status field
+	    return trepo.save(task);
+	}
+	
 	//DELETE
 	public String deleteTask(int taskId) {
 		String msg = "";
