@@ -49,5 +49,10 @@ public class FlashcardController {
     public String deleteFlashcard(@PathVariable int flashcard_id) {
     	return fserv.deleteFlashcard(flashcard_id);
     }
+
+    @GetMapping("/getFlashcardsBySetId/{setId}")
+    public List<FlashcardEntity> getFlashcardsBySetId(@PathVariable int setId) {
+        return fserv.getFlashcardsBySetId(setId);
+    }
     
 }

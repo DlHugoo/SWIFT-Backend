@@ -78,6 +78,13 @@ public class FlashcardSetService {
 		return msg;
 	}
 
+	public List<FlashcardSetEntity> getFlashcardSetsByUser(int userId) {
+		UserEntity user = urepo.findById(userId)
+				.orElseThrow(() -> new NoSuchElementException("User with ID " + userId + " not found."));
+		return fsrepo.findByUser(user);
+	}
+	
+
     public static Optional<QuizEntity> findById(int setId) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findById'");

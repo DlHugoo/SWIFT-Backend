@@ -80,4 +80,13 @@ public class FlashcardService {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'postFlashcardSetRecord'");
 	}
+
+	public List<FlashcardEntity> getFlashcardsBySetId(int setId) {
+		// Check if the flashcard set exists in the database
+		FlashcardSetEntity flashcardSet = fsrepo.findById(setId)
+				.orElseThrow(() -> new NoSuchElementException("FlashcardSet with ID " + setId + " does not exist."));
+		
+		// Retrieve and return the list of flashcards associated with the specified set_id
+		return frepo.findByFlashcardset(flashcardSet);
+	}
 }
