@@ -2,6 +2,8 @@ package com.g2appdev.swift.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,6 +34,19 @@ public class UserEntity {
 	cascade = CascadeType.ALL)
 	private List<DailyQuestEntity> dailyQuest;
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true,
+	cascade = CascadeType.ALL)
+	@JsonManagedReference
+	private List<TaskEntity> tasks;
+
+	// Getters and Setters
+    public List<TaskEntity> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<TaskEntity> tasks) {
+        this.tasks = tasks;
+    }
 	
 	public UserEntity() {
 		super();

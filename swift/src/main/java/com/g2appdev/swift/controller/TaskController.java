@@ -18,43 +18,46 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import com.g2appdev.swift.entity.TaskEntity;
 import com.g2appdev.swift.service.TaskService;
 
-
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping(method = RequestMethod.GET,path="/api/task")
+@RequestMapping(method = RequestMethod.GET, path = "/api/task")
 public class TaskController {
 	@Autowired
 	TaskService sserv;
-	@GetMapping("/print")
-	public String print() {
-		return "Hello, Laboratory Exercise";
-	}
-	//CREATE
+
+	// CREATE Task for specific user
 	@PostMapping("/posttaskrecord")
-	public TaskEntity postTaskRecord(@RequestBody TaskEntity task) {
-		return sserv.postTaskRecord(task);
-	}
-	//READ
+public TaskEntity postTaskRecord(@RequestBody TaskEntity task) {
+    return sserv.postTaskRecord(task);
+}
+
+	// READ all tasks
 	@GetMapping("/getAllTasks")
-	public List<TaskEntity>getAllTasks(){
+	public List<TaskEntity> getAllTasks() {
 		return sserv.getAllTasks();
 	}
-	//UPDATE
+
+	// READ Tasks for a specific user
+	@GetMapping("/getTasksByUser/{userId}")
+	public List<TaskEntity> getTasksByUser(@PathVariable int userId) {
+		return sserv.getTasksByUser(userId);
+	}
+
+	// UPDATE Task details
 	@PutMapping("/putTaskDetails")
 	public TaskEntity putTaskDetails(@RequestParam int id, @RequestBody TaskEntity newTaskDetails) {
-		return sserv.putTaskDetails(id,newTaskDetails);
+		return sserv.putTaskDetails(id, newTaskDetails);
 	}
-	
+
 	// UPDATE Task Status
 	@PutMapping("/updateTaskStatus")
 	public TaskEntity updateTaskStatus(@RequestParam int id, @RequestParam boolean status) {
-	    return sserv.updateTaskStatus(id, status);
+		return sserv.updateTaskStatus(id, status);
 	}
-	
-	//DELETE
+
+	// DELETE
 	@DeleteMapping("/deleteTaskDetails/{taskId}")
 	public String deleteTask(@PathVariable int taskId) {
-	    System.out.println("Received delete request for task ID: " + taskId);
-	    return sserv.deleteTask(taskId);
+		return sserv.deleteTask(taskId);
 	}
 }
