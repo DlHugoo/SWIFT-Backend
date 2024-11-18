@@ -13,7 +13,7 @@ public class FlashcardSetEntity {
     private String title;
     private String description;
 
-	@OneToOne(mappedBy = "flashcardset")
+	@OneToOne(mappedBy = "flashcardset", cascade = CascadeType.ALL)
 	private QuizEntity quiz;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "flashcardset", orphanRemoval = true,
