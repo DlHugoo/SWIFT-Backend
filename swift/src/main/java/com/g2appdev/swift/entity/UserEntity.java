@@ -28,6 +28,10 @@ public class UserEntity {
 	cascade = CascadeType.ALL)
 	private List<FlashcardSetEntity> flashcardset;
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true,
+	cascade = CascadeType.ALL)
+	private List<DailyQuestEntity> dailyQuest;
+
 	
 	public UserEntity() {
 		super();

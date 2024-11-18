@@ -1,9 +1,12 @@
 package com.g2appdev.swift.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,6 +20,18 @@ public class DailyQuestEntity {
 	private String description;
 	private String status;
 	private int coinsEarned;
+
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "userID")
+	private UserEntity user;
+
+	public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
 	
 	public DailyQuestEntity() {
 		super();

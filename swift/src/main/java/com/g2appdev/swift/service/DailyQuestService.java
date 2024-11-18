@@ -9,12 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.g2appdev.swift.entity.DailyQuestEntity;
+import com.g2appdev.swift.entity.UserEntity;
 import com.g2appdev.swift.repository.DailyQuestRepository;
+import com.g2appdev.swift.repository.UserRepository;
 
 @Service
 public class DailyQuestService {
 	@Autowired
 	DailyQuestRepository drepo;
+
+	@Autowired
+    UserRepository urepo;
 	
 	public DailyQuestService() {
 		super();
@@ -22,9 +27,12 @@ public class DailyQuestService {
 	
 	//Create of CRUD
 	public DailyQuestEntity postDailyQuestRecord(DailyQuestEntity dailyQuest) {
-		//TeacherEntity teacher = trepo.findById(student.getTeacher().getTeacherID())
-			//	.orElseThrow(()-> new NoSuchElementException("Teacher with ID "+student.getTeacher().getTeacherID()+ "does not exist."));
-		//student.setTeacher(teacher);
+		if (dailyQuest.getUser() == null) {
+			throw new IllegalArgumentException("User cannot be null.");
+		}
+		UserEntity user = urepo.findById(dailyQuest.getUser().getUserID())
+				.orElseThrow(() -> new NoSuchElementException("DailyQ Quest with ID " + dailyQuest.getUser().getUserID() + " does not exist."));
+				dailyQuest.setUser(user);
 		return drepo.save(dailyQuest);
 	}
 		
