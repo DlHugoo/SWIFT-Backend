@@ -21,7 +21,7 @@ public class DailyQuestEntity {
 	private String status;
 	private int coinsEarned;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name = "userID")
 	private UserEntity user;
 
