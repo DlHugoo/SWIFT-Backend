@@ -30,6 +30,7 @@ public class FlashcardSetService {
         super();
     }
 
+	//Create
     public FlashcardSetEntity postFlashcardSetRecord(FlashcardSetEntity flashcardset) {
 
 		if (flashcardset.getUser() == null) {
@@ -42,10 +43,13 @@ public class FlashcardSetService {
 		return fsrepo.save(flashcardset);
 	}
 
+	//Read
 	public List<FlashcardSetEntity>getAllFlashcardSets(){
 		return fsrepo.findAll();
 	}
 
+
+	//update
 	@SuppressWarnings("finally")
 	public FlashcardSetEntity putFlashcardSetDetails(int set_id, FlashcardSetEntity newFlashCardSetDetails) {
 		FlashcardSetEntity student = new FlashcardSetEntity();
@@ -62,6 +66,7 @@ public class FlashcardSetService {
 		}
 	}
 
+	//delete
 	@SuppressWarnings("unused")
 	public String deleteFlashcardSet(int set_id) {
 		String msg = "";
