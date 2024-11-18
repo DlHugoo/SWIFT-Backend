@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 //import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.g2appdev.swift.entity.QuizEntity;
 import com.g2appdev.swift.service.QuizService;
 
@@ -48,5 +47,10 @@ public class QuizController {
     @DeleteMapping("/deleteQuizDetails/{quiz_id}")
     public String deleteQuiz(@PathVariable int quiz_id) {
     	return qserv.deleteQuiz(quiz_id);
+    }
+
+    @GetMapping("/getQuizBySetId/{setId}")
+    public List<QuizEntity> getFlashcardsBySetId(@PathVariable int setId) {
+        return qserv.getFlashcardsBySetId(setId);
     }
 }

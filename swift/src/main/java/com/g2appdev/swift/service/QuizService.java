@@ -90,4 +90,14 @@ public class QuizService {
             return "Quiz with ID " + quiz_id + " not found!";
         }
     }
+
+    	public List<QuizEntity> getFlashcardsBySetId(int setId) {
+		// Check if the flashcard set exists in the database
+		FlashcardSetEntity flashcardSet = fsrepo.findById(setId)
+				.orElseThrow(() -> new NoSuchElementException("FlashcardSet with ID " + setId + " does not exist."));
+		
+		// Retrieve and return the list of flashcards associated with the specified set_id
+		return qrepo.findByFlashcardset(flashcardSet);
+	}
+    
 }
