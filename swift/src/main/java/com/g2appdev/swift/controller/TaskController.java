@@ -26,10 +26,9 @@ public class TaskController {
 	TaskService sserv;
 
 	// CREATE Task for specific user
-	@PostMapping("/posttaskrecord/{userId}")
-public TaskEntity postTaskRecordForUser(@RequestBody TaskEntity task, @PathVariable int userId) {
-    System.out.println("Received task creation request for User ID: " + userId + " with task: " + task.getTitle());
-    return sserv.postTaskRecordForUser(task, userId);
+	@PostMapping("/posttaskrecord")
+public TaskEntity postTaskRecord(@RequestBody TaskEntity task) {
+    return sserv.postTaskRecord(task);
 }
 
 	// READ all tasks

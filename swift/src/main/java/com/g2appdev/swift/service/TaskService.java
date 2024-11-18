@@ -11,9 +11,14 @@ import com.g2appdev.swift.entity.UserEntity;
 import com.g2appdev.swift.repository.TaskRepository;
 import com.g2appdev.swift.repository.UserRepository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 @Service
 public class TaskService {
 
+	@PersistenceContext
+    private EntityManager entityManager;
 	@Autowired
 	TaskRepository trepo;
 
@@ -25,16 +30,13 @@ public class TaskService {
 	}
 
 	// CREATE Task for specific user
-	public TaskEntity postTaskRecordForUser(TaskEntity task, int userId) {
-		UserEntity user = urepo.findById(userId)
-				.orElseThrow(() -> new NoSuchElementException("User " + userId + " not found"));
-	
-		// Optional: Avoid saving duplicate tasks
-		List<TaskEntity> existingTasks = user.getTasks();
-		if (existingTasks.stream().anyMatch(t -> t.getTitle().equalsIgnoreCase(task.getTitle()))) {
-			throw new IllegalArgumentException("A task with this title already exists for the user.");
+	public TaskEntity postTaskRecord(TaskEntity task) {
+		if (task.getUser() == null || task.getUser().getUserID() == 0) {
+			throw new IllegalArgumentException("User cannot be null or missing.");
 		}
-	
+		UserEntity user = urepo.findById(task.getUser().getUserID())
+				.orElseThrow(() -> new NoSuchElementException("User " + task.getUser().getUserID() + " not found"));
+		
 		task.setUser(user);
 		return trepo.save(task);
 	}
