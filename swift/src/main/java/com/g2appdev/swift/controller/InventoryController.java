@@ -32,7 +32,7 @@ public class InventoryController {
 	@Autowired
 	private ShopService shopService;
 
-	@GetMapping("/user/{userId}")
+	@GetMapping("/user/{userID}")
 	public ResponseEntity<InventoryEntity> getInventoryByUser(@PathVariable int userID) {
 		UserEntity user = new UserEntity();
 		user.setUserID(userID);
