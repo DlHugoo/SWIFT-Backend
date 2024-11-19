@@ -10,99 +10,94 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 import jakarta.persistence.OneToMany;
 
-@Entity
-@Table(name = "tblusers")
 
+@Entity
 public class UserEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	
 	private int userID;
-
+	
 	private String username;
 	private String email;
 	private String password;
-
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "inventoryId")
-	private InventoryEntity inventory;
-
-	// Getters and Setters
-	public int getUserID() {
-		return userID;
-	}
-
 	private int progressData = 0; // Default progress
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true,
+	cascade = CascadeType.ALL)
 	private List<FlashcardSetEntity> flashcardset;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true,
+	cascade = CascadeType.ALL)
 	private List<DailyQuestEntity> dailyQuest;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true,
+	cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private List<TaskEntity> tasks;
 
 	// Getters and Setters
-	public List<TaskEntity> getTasks() {
-		return tasks;
-	}
+    public List<TaskEntity> getTasks() {
+        return tasks;
+    }
 
-	public void setTasks(List<TaskEntity> tasks) {
-		this.tasks = tasks;
-	}
-
+    public void setTasks(List<TaskEntity> tasks) {
+        this.tasks = tasks;
+    }
+	
 	public UserEntity() {
 		super();
-
 	}
-
-	public void setUserID(int userId) {
-		this.userID = userId;
+	
+	public UserEntity(int userID, String username, String email, String password, int progressData) {
+		super();
+		this.userID = userID;
+		this.username = username;
+		this.email = email;
+		this.password =  password;
+		this.progressData = progressData;
 	}
-
+	
+	public int getUserID() {
+		return userID;
+	}
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+	
 	public String getUsername() {
 		return username;
 	}
-
-	public void setUsername(String username) {
-		this.username = username;
+	
+	public void setUsername(String Username) {
+		this.username = Username;
 	}
-
+	
 	public String getEmail() {
 		return email;
 	}
-
+	
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
+	
 	public String getPassword() {
 		return password;
 	}
-
+	
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	
 	public int getProgressData() {
 		return progressData;
 	}
-
+	
 	public void setProgressData(int progressData) {
 		this.progressData = progressData;
 	}
 
-	public InventoryEntity getInventory() {
-		return inventory;
-	}
-
-	public void setInventory(InventoryEntity inventory) {
-		this.inventory = inventory;
-	}
 }
