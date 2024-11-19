@@ -1,56 +1,63 @@
 package com.g2appdev.swift.service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-
-import javax.naming.NameNotFoundException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.g2appdev.swift.entity.InventoryEntity;
+import com.g2appdev.swift.entity.ShopEntity;
+import com.g2appdev.swift.entity.UserEntity;
 import com.g2appdev.swift.repository.InventoryRepository;
+import com.g2appdev.swift.repository.ShopRepository;
 
 @Service
 public class InventoryService {
 	@Autowired
-	InventoryRepository irepo;
-	
-	public InventoryService() {
-		super();
+	private InventoryRepository inventoryRepository;
+	@Autowired
+	private ShopRepository shopRepository;
+
+	public InventoryEntity getInventoryByUser(UserEntity user) {
+		return inventoryRepository.findByUser(user)
+				.orElseGet(() -> createNewInventoryForUser(user));
 	}
-	
-	public InventoryEntity postInventoryRecord(InventoryEntity inventory) {
-		return irepo.save(inventory);
+
+	public InventoryEntity getInventoryById(int id) {
+		Optional<InventoryEntity> optionalInventory = inventoryRepository.findById(id);
+		return optionalInventory.orElseThrow(() -> new RuntimeException("Inventory not found with ID: " + id));
 	}
-	public List<InventoryEntity> getAllInventory(){
-		return irepo.findAll();
+
+	public InventoryEntity createInventory(InventoryEntity inventory) {
+		return inventoryRepository.save(inventory);
 	}
-	@SuppressWarnings("finally")
-	public InventoryEntity putInventoryDetails(int inventoryId, InventoryEntity newInventoryDetails) {
-		InventoryEntity inventory = new InventoryEntity();
-		try {
-			inventory = irepo.findById(inventoryId).get();
-			
-			inventory.setItemList(newInventoryDetails.getItemList());
-			inventory.setTotalCoins(newInventoryDetails.getTotalCoins());
-			
-		}catch(NoSuchElementException nex) {
-			throw new NameNotFoundException("Item not found");
-		}finally {
-			return irepo.save(inventory);
-		}
+
+	public InventoryEntity updateInventory(int id, InventoryEntity inventory) {
+		InventoryEntity existingInventory = getInventoryById(id);
+		existingInventory.setTotalCoins(inventory.getTotalCoins());
+		existingInventory.setItemList(inventory.getItemList());
+		return inventoryRepository.save(existingInventory);
 	}
-	
-	public String deleteInventory(int inventoryId) {
-		String msg = "";
-		if(irepo.findById(inventoryId).isPresent()) {
-			irepo.deleteById(inventoryId);
-			msg = "Shop Record successfully deleted!";
-		}else {
-			msg = inventoryId+"Not Found!";
-		}return msg;
+
+	public void deleteInventory(int id) {
+		inventoryRepository.deleteById(id);
 	}
-	
-	
+
+	public InventoryEntity addItemToInventory(InventoryEntity inventory, ShopEntity item) {
+		inventory.getItems().add(item);
+		inventory.setTotalCoins(inventory.getTotalCoins() - item.getItemCost());
+		return inventoryRepository.save(inventory);
+	}
+
+	private InventoryEntity createNewInventoryForUser(UserEntity user) {
+		InventoryEntity newInventory = new InventoryEntity();
+		newInventory.setUser(user);
+		return inventoryRepository.save(newInventory);
+	}
+
+	public List<InventoryEntity> findAll() {
+		return inventoryRepository.findAll();
+	}
+
 }
