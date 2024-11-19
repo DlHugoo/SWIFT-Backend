@@ -1,5 +1,6 @@
 package com.g2appdev.swift.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -8,8 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.g2appdev.swift.entity.FlashcardSetEntity;
 import com.g2appdev.swift.entity.QuizEntity;
+import com.g2appdev.swift.entity.UserEntity;
 import com.g2appdev.swift.repository.FlashcardSetRepository;
 import com.g2appdev.swift.repository.QuizRepository;
+import com.g2appdev.swift.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -21,6 +24,9 @@ public class QuizService {
 
     @Autowired
     FlashcardSetRepository fsrepo;
+
+    	@Autowired
+    UserRepository urepo;
 
     public QuizService() {
         super();
@@ -91,13 +97,21 @@ public class QuizService {
         }
     }
 
-    	public List<QuizEntity> getFlashcardsBySetId(int setId) {
-		// Check if the flashcard set exists in the database
-		FlashcardSetEntity flashcardSet = fsrepo.findById(setId)
-				.orElseThrow(() -> new NoSuchElementException("FlashcardSet with ID " + setId + " does not exist."));
-		
-		// Retrieve and return the list of flashcards associated with the specified set_id
-		return qrepo.findByFlashcardset(flashcardSet);
-	}
+public List<QuizEntity> getFlashcardsByUserId(int userId) {
+    // Check if the user exists
+    UserEntity user = urepo.findById(userId)
+            .orElseThrow(() -> new NoSuchElementException("User with ID " + userId + " does not exist."));
+
+    // Retrieve and return the list of flashcards associated with the specified user
+    List<FlashcardSetEntity> flashcardSets = fsrepo.findByUser(user);  // Assuming there's a method to get FlashcardSets by user
+    
+    // Get the list of flashcards from each set
+    List<QuizEntity> flashcards = new ArrayList<>();
+    for (FlashcardSetEntity flashcardSet : flashcardSets) {
+        flashcards.addAll(qrepo.findByFlashcardset(flashcardSet));
+    }
+
+    return flashcards;
+}
     
 }
