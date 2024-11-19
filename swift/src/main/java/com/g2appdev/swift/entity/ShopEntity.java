@@ -1,16 +1,11 @@
 package com.g2appdev.swift.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tblshop")
 public class ShopEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,10 +14,11 @@ public class ShopEntity {
 	private String itemName;
 	private int itemCost;
 	private String itemUrl;
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "inventoryId")
-	private InventoryEntity inventory;
 
+	/*
+	 * @ManyToMany(mappedBy = "items")
+	 * private Set<InventoryEntity> inventories;
+	 */
 	public ShopEntity() {
 
 	}
@@ -63,13 +59,5 @@ public class ShopEntity {
 
 	public void setItemUrl(String itemUrl) {
 		this.itemUrl = itemUrl;
-	}
-
-	public InventoryEntity getInventory() {
-		return inventory;
-	}
-
-	public void setInventroy(InventoryEntity inventory) {
-		this.inventory = inventory;
 	}
 }
