@@ -33,9 +33,9 @@ public class InventoryController {
 	private ShopService shopService;
 
 	@GetMapping("/user/{userId}")
-	public ResponseEntity<InventoryEntity> getInventoryByUser(@PathVariable int userId) {
+	public ResponseEntity<InventoryEntity> getInventoryByUser(@PathVariable int userID) {
 		UserEntity user = new UserEntity();
-		user.setUserId(userId);
+		user.setUserID(userID);
 		InventoryEntity inventory = inventoryService.getInventoryByUser(user);
 
 		if (inventory == null) {

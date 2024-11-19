@@ -105,7 +105,7 @@ public class UserController {
             // Prepare response with token and user ID
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Registration successful");
-            response.put("userId", registeredUser.getUserId());
+            response.put("userId", registeredUser.getUserID());
             response.put("token", token);
 
             return ResponseEntity.ok(response);
@@ -130,7 +130,7 @@ public class UserController {
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Login successful");
             response.put("token", token);
-            response.put("userId", user.getUserId());
+            response.put("userId", user.getUserID());
             response.put("username", user.getUsername());
             response.put("email", user.getEmail());
             response.put("progressData", user.getProgressData());
