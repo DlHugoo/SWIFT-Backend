@@ -38,6 +38,12 @@ public class FlashcardSetController {
         return fsserv.getAllFlashcardSets();
     }
 
+        // New endpoint to get flashcard sets by user
+        @GetMapping("/getAllFlashcardSetByUser/{userId}")
+    public List<FlashcardSetEntity> getFlashcardSetsByUser(@PathVariable int userId) {
+        return fsserv.getFlashcardSetsByUser(userId);
+    }
+
     @PutMapping("/putFlashcardSetDetails/{set_id}")
     public FlashcardSetEntity putFlashcardSetDetails(@PathVariable int set_id, @RequestBody FlashcardSetEntity newFlashCardSetDetails) {
         return fsserv.putFlashcardSetDetails(set_id, newFlashCardSetDetails);

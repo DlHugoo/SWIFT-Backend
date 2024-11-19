@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SwiftApplication<swift>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.g2appdev.swift.SwiftApplication",
+            "projectName": "swift",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

@@ -13,12 +13,24 @@ public class FlashcardSetEntity {
     private String title;
     private String description;
 
-	@OneToOne(mappedBy = "flashcardset")
+	@OneToOne(mappedBy = "flashcardset", cascade = CascadeType.ALL)
 	private QuizEntity quiz;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "flashcardset", orphanRemoval = true,
 	cascade = CascadeType.ALL)
 	private List<FlashcardEntity> flashcard;
+
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "userID")
+	private UserEntity user;
+
+	public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
 
     public FlashcardSetEntity(){
         super();
