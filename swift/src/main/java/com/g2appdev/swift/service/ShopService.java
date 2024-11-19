@@ -1,9 +1,7 @@
 package com.g2appdev.swift.service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-
-import javax.naming.NameNotFoundException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,45 +12,40 @@ import com.g2appdev.swift.repository.ShopRepository;
 @Service
 public class ShopService {
 	@Autowired
-	ShopRepository srepo;
-
-	public ShopService() {
-		super();
-	}
+	private ShopRepository shopRepository;
 
 	public ShopEntity postShopRecord(ShopEntity shop) {
-		return srepo.save(shop);
+		return shopRepository.save(shop);
 	}
 
 	public List<ShopEntity> getAllShop() {
-		return srepo.findAll();
+		return shopRepository.findAll();
 	}
 
-	@SuppressWarnings("finally")
 	public ShopEntity putShopDetails(int itemId, ShopEntity newShopDetails) {
-		ShopEntity shop = new ShopEntity();
-		try {
-			shop = srepo.findById(itemId).get();
-
+		Optional<ShopEntity> optionalShop = shopRepository.findById(itemId);
+		if (optionalShop.isPresent()) {
+			ShopEntity shop = optionalShop.get();
 			shop.setItemName(newShopDetails.getItemName());
 			shop.setItemCost(newShopDetails.getItemCost());
 			shop.setItemUrl(newShopDetails.getItemUrl());
-
-		} catch (NoSuchElementException nex) {
-			throw new NameNotFoundException("Shop not found");
-		} finally {
-			return srepo.save(shop);
+			return shopRepository.save(shop);
+		} else {
+			throw new RuntimeException("Shop not found with ID: " + itemId);
 		}
 	}
 
 	public String deleteShop(int itemId) {
-		String msg = "";
-		if (srepo.findById(itemId).isPresent()) {
-			srepo.deleteById(itemId);
-			msg = "Shop Record successfully deleted!";
+		if (shopRepository.existsById(itemId)) {
+			shopRepository.deleteById(itemId);
+			return "Shop with ID " + itemId + " has been deleted.";
 		} else {
-			msg = itemId + "Not Found!";
+			throw new RuntimeException("Shop not found with ID: " + itemId);
 		}
-		return msg;
+	}
+
+	public ShopEntity getShopItemById(int id) {
+		Optional<ShopEntity> optionalShop = shopRepository.findById(id);
+		return optionalShop.orElseThrow(() -> new RuntimeException("Shop item not found with ID: " + id));
 	}
 }

@@ -52,7 +52,8 @@ public class UserController {
             if (newUserDetails.getPassword() != null && !newUserDetails.getPassword().isEmpty()) {
                 if (!isValidPassword(newUserDetails.getPassword())) {
                     Map<String, String> error = new HashMap<>();
-                    error.put("error", "Password must be at least 8 characters long and contain at least one special character.");
+                    error.put("error",
+                            "Password must be at least 8 characters long and contain at least one special character.");
                     return ResponseEntity.badRequest().body(error);
                 }
             }
@@ -73,27 +74,28 @@ public class UserController {
         return userv.deleteUser(userID);
     }
 
-  //Password Validation utility
+    // Password Validation utility
     private boolean isValidPassword(String password) {
         // At least 8 characters and contains at least one special character
         String passwordPattern = "^(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,}$";
         return password != null && password.matches(passwordPattern);
     }
-    
+
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    
+
     // Registration Endpoint using UserDTO
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
-    	logger.info("Attempting to register user with username: {}", userDTO.getUsername());
+        logger.info("Attempting to register user with username: {}", userDTO.getUsername());
         try {
-        	 // Validate password format
+            // Validate password format
             if (!isValidPassword(userDTO.getPassword())) {
                 Map<String, String> error = new HashMap<>();
-                error.put("error", "Password must be at least 8 characters long and contain at least one special character.");
+                error.put("error",
+                        "Password must be at least 8 characters long and contain at least one special character.");
                 return ResponseEntity.badRequest().body(error);
             }
-            
+
             // Register new user using UserDTO and convert to UserEntity in service layer
             UserEntity registeredUser = userv.registerUser(userDTO);
 
@@ -149,8 +151,8 @@ public class UserController {
         response.put("exists", exists);
         return ResponseEntity.ok(response);
     }
-    
- // Check if Email Exists Endpoint
+
+    // Check if Email Exists Endpoint
     @GetMapping("/exists/email")
     public ResponseEntity<Map<String, Boolean>> checkEmailExists(@RequestParam String email) {
         boolean exists = userv.existsByEmail(email);
@@ -158,5 +160,5 @@ public class UserController {
         response.put("exists", exists);
         return ResponseEntity.ok(response);
     }
-    
+
 }
