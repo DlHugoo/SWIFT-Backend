@@ -3,14 +3,14 @@ package com.g2appdev.swift.service;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.g2appdev.swift.dto.UserDTO;
 import com.g2appdev.swift.entity.UserEntity;
 import com.g2appdev.swift.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 
@@ -70,7 +70,7 @@ public class UserService {
 	            user.setPassword(newUserDetails.getPassword());
 	        }
 	        
-	        user.setProgressData(newUserDetails.getProgressData());
+	        user.setCoinBalance(newUserDetails.getCoinBalance());
 
 	    } finally {
 	        return urepo.save(user);
@@ -111,7 +111,7 @@ public class UserService {
 	        newUser.setUsername(userDTO.getUsername());
 	        newUser.setEmail(userDTO.getEmail());
 	        newUser.setPassword(userDTO.getPassword());  // Use password hashing in production
-	        userDTO.setProgressData(0); // Initial progress
+	        userDTO.setCoinBalance(0); // Initial progress
 	        
 	        logger.info("Registering new user: {}", newUser.getUsername());
 	        return urepo.save(newUser);

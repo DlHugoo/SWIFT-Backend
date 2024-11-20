@@ -24,7 +24,7 @@ public class UserEntity {
 	private String username;
 	private String email;
 	private String password;
-	private int progressData = 0; // Default progress
+	private int coinBalance = 0; // Default progress
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true,
 	cascade = CascadeType.ALL)
@@ -52,13 +52,13 @@ public class UserEntity {
 		super();
 	}
 	
-	public UserEntity(int userID, String username, String email, String password, int progressData) {
+	public UserEntity(int userID, String username, String email, String password, int coinBalance) {
 		super();
 		this.userID = userID;
 		this.username = username;
 		this.email = email;
 		this.password =  password;
-		this.progressData = progressData;
+		this.coinBalance = coinBalance;
 	}
 	
 	public int getUserID() {
@@ -92,12 +92,12 @@ public class UserEntity {
 		this.password = password;
 	}
 	
-	public int getProgressData() {
-		return progressData;
+	public int getCoinBalance() {
+		return coinBalance;
 	}
 	
-	public void setProgressData(int progressData) {
-		this.progressData = progressData;
+	public void setCoinBalance(int coinBalance) {
+		this.coinBalance = coinBalance;
 	}
 
 }
