@@ -4,16 +4,16 @@ public class UserDTO {
     private String username;
     private String email;
     private String password;
-    private int progressData = 0;
+    private int coinBalance = 0;
 
     // Constructors
     public UserDTO() {}
 
-    public UserDTO(String username, String email, String password, int progressData) {
+    public UserDTO(String username, String email, String password, int coinBalance) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.progressData = progressData;
+        this.coinBalance= coinBalance;
     }
 
     // Getters and Setters
@@ -41,11 +41,11 @@ public class UserDTO {
         this.password = password;
     }
     
-    public int getProgressData() {
-		return progressData;
+    public int getCoinBalance() {
+		return coinBalance;
 	}
 	
-	public void setProgressData(int progressData) {
-		this.progressData = progressData;
+	public void setCoinBalance(int coinBalance) {
+		this.coinBalance = coinBalance;
 	}
 }
