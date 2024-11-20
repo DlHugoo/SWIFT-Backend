@@ -49,8 +49,8 @@ public class QuizController {
     	return qserv.deleteQuiz(quiz_id);
     }
 
-    @GetMapping("/getQuizBySetId/{setId}")
-    public List<QuizEntity> getFlashcardsBySetId(@PathVariable int setId) {
-        return qserv.getFlashcardsBySetId(setId);
+    @GetMapping("/getQuizByUserId/{userId}")
+    public List<QuizEntity> getFlashcardsByUserId(@PathVariable int userId) {
+        return qserv.getFlashcardsByUserId(userId);
     }
 }
