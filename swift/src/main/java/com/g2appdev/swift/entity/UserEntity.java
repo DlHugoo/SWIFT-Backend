@@ -12,90 +12,99 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
-
 @Entity
 public class UserEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	
+
 	private int userID;
-	
+
 	private String username;
 	private String email;
 	private String password;
 	private int progressData = 0; // Default progress
-	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true,
-	cascade = CascadeType.ALL)
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
 	private List<FlashcardSetEntity> flashcardset;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true,
-	cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
 	private List<DailyQuestEntity> dailyQuest;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true,
-	cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private List<TaskEntity> tasks;
 
-	// Getters and Setters
-    public List<TaskEntity> getTasks() {
-        return tasks;
-    }
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+	@JsonManagedReference
+	private List<InventoryEntity> inventory;
 
-    public void setTasks(List<TaskEntity> tasks) {
-        this.tasks = tasks;
-    }
-	
+	// Getters and Setters
+	public List<TaskEntity> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(List<TaskEntity> tasks) {
+		this.tasks = tasks;
+	}
+
 	public UserEntity() {
 		super();
 	}
-	
+
+	public List<InventoryEntity> getInventory() {
+		return inventory;
+	}
+
+	public void setInventory(List<InventoryEntity> inventory) {
+		this.inventory = inventory;
+	}
+
 	public UserEntity(int userID, String username, String email, String password, int progressData) {
 		super();
 		this.userID = userID;
 		this.username = username;
 		this.email = email;
-		this.password =  password;
+		this.password = password;
 		this.progressData = progressData;
 	}
-	
+
 	public int getUserID() {
 		return userID;
 	}
+
 	public void setUserID(int userID) {
 		this.userID = userID;
 	}
-	
+
 	public String getUsername() {
 		return username;
 	}
-	
+
 	public void setUsername(String Username) {
 		this.username = Username;
 	}
-	
+
 	public String getEmail() {
 		return email;
 	}
-	
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
 	public String getPassword() {
 		return password;
 	}
-	
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public int getProgressData() {
 		return progressData;
 	}
-	
+
 	public void setProgressData(int progressData) {
 		this.progressData = progressData;
 	}
