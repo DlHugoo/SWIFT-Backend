@@ -16,10 +16,12 @@ public class InventoryEntity {
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "userID")
+
 	private UserEntity user;
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "itemID")
+
 	private ShopEntity item;
 
 	public InventoryEntity() {
