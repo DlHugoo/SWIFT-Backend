@@ -3,43 +3,54 @@ package com.g2appdev.swift.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.g2appdev.swift.entity.InventoryEntity;
 import com.g2appdev.swift.service.InventoryService;
 
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", methods = { RequestMethod.GET, RequestMethod.POST,
+		RequestMethod.PUT, RequestMethod.DELETE })
+
 @RestController
-@RequestMapping(method = RequestMethod.GET, path="/api/inventory")
+@RequestMapping("/api/inventory")
 public class InventoryController {
+
 	@Autowired
 	InventoryService iserv;
-	
+
 	@GetMapping("/print")
 	public String print() {
 		return "Welcome to your inventory";
 	}
+
+	// CREATE Inventory Record
 	@PostMapping("/postInventoryRecord")
-	public InventoryEntity postInvetoryRecord(@RequestBody InventoryEntity inventory) {
+	public InventoryEntity postInventoryRecord(@RequestBody InventoryEntity inventory) {
+		System.out.println("Received Inventory: " + inventory);
 		return iserv.postInventoryRecord(inventory);
 	}
+
+	// READ all Inventory
 	@GetMapping("/getAllInventory")
-	public List<InventoryEntity> getAllInventory(){
+	public List<InventoryEntity> getAllInventory() {
 		return iserv.getAllInventory();
 	}
-	@PutMapping("/putInventoryDetails")
-	public InventoryEntity putInventoryDetails(@RequestParam int inventoryId, @RequestBody InventoryEntity newInventoryDetails) {
-		return iserv.putInventoryDetails(inventoryId,newInventoryDetails);
+
+	// READ Inventory for a specific user
+	@GetMapping("/getInventoryByUserId/{userID}")
+	public List<InventoryEntity> getInventoryByUserID(@PathVariable int userID) {
+		return iserv.getInventoryByUserID(userID);
 	}
-	@DeleteMapping("/deleteInventoryDetails/{inventoryId}")
+
+	// UPDATE Inventory Details
+	@PutMapping("/putInventoryDetails/{inventoryId}")
+	public InventoryEntity putInventoryDetails(@PathVariable int inventoryId,
+			@RequestBody InventoryEntity newInventoryDetails) {
+		return iserv.putInventoryDetails(inventoryId, newInventoryDetails);
+	}
+
+	// DELETE Inventory
+	@DeleteMapping("/deleteInventory/{inventoryId}")
 	public String deleteInventory(@PathVariable int inventoryId) {
 		return iserv.deleteInventory(inventoryId);
 	}

@@ -36,7 +36,7 @@ public class UserEntity {
 	private List<TaskEntity> tasks;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
-
+	@JsonManagedReference(value = "user-reference")
 	private List<InventoryEntity> inventory;
 
 	// Getters and Setters

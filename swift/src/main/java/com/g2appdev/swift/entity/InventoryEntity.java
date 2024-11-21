@@ -1,5 +1,7 @@
 package com.g2appdev.swift.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,23 +17,21 @@ public class InventoryEntity {
 	private int inventoryId;
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JsonBackReference(value = "user-reference")
 	@JoinColumn(name = "userID")
-
 	private UserEntity user;
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JsonBackReference(value = "item-reference")
 	@JoinColumn(name = "itemID")
-
 	private ShopEntity item;
 
 	public InventoryEntity() {
-
 	}
 
 	public InventoryEntity(int inventoryId) {
 		super();
 		this.inventoryId = inventoryId;
-
 	}
 
 	public int getInventoryId() {
@@ -53,5 +53,4 @@ public class InventoryEntity {
 	public void setItem(ShopEntity item) {
 		this.item = item;
 	}
-
 }
