@@ -19,6 +19,9 @@ public class UserService {
 	
 	@Autowired
 	UserRepository urepo;
+
+    @Autowired
+    DailyQuestService dailyQuestService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 	
@@ -93,45 +96,55 @@ public class UserService {
 	}
 	
 	//Register
-	 public UserEntity registerUser(UserDTO userDTO) {
-	        // Check if user already exists
-	        if (urepo.findByUsername(userDTO.getUsername()) != null) {
-	        	logger.warn("Attempt to register with existing username: {}", userDTO.getUsername());
-	            throw new RuntimeException("Username already exists");
-	        }
-	        if (urepo.existsByEmail(userDTO.getEmail())) {
-	            throw new RuntimeException("Email already exists");
-	        }
-	        
-	        // Validate password
-	        validatePassword(userDTO.getPassword());
-	        
-	        // Set default values for new users
-	        UserEntity newUser = new UserEntity();
-	        newUser.setUsername(userDTO.getUsername());
-	        newUser.setEmail(userDTO.getEmail());
-	        newUser.setPassword(userDTO.getPassword());  // Use password hashing in production
-	        userDTO.setCoinBalance(0); // Initial progress
-	        
-	        logger.info("Registering new user: {}", newUser.getUsername());
-	        return urepo.save(newUser);
-	  }
+    public UserEntity registerUser(UserDTO userDTO) {
+        // Check if user already exists
+        if (urepo.findByUsername(userDTO.getUsername()) != null) {
+            logger.warn("Attempt to register with existing username: {}", userDTO.getUsername());
+            throw new RuntimeException("Username already exists");
+        }
+        if (urepo.existsByEmail(userDTO.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+    
+        // Validate password
+        validatePassword(userDTO.getPassword());
+    
+        // Set default values for new users
+        UserEntity newUser = new UserEntity();
+        newUser.setUsername(userDTO.getUsername());
+        newUser.setEmail(userDTO.getEmail());
+        newUser.setPassword(userDTO.getPassword());  // Use password hashing in production
+        newUser.setCoinBalance(0); // Initial progress
+    
+        logger.info("Registering new user: {}", newUser.getUsername());
+        UserEntity savedUser = urepo.save(newUser);
+    
+        // Create default daily quests for the new user
+        dailyQuestService.createDefaultDailyQuestsForUser(savedUser);
+    
+        return savedUser;
+    }
 	 
 	    
 	  public UserEntity authenticateUser(String username, String password) {
-	      UserEntity user = urepo.findByUsername(username);
-	       if (user == null) {
-	    	   logger.warn("User not found with username: {}", username);
-	           throw new RuntimeException("User not found");
-	       }
-	        
-	       if (!user.getPassword().equals(password)) { // Note: In production, use proper password hashing
-	    	   logger.warn("Invalid password for username: {}", username);
-	           throw new RuntimeException("Invalid password");
-	       }
-	       logger.info("User authenticated: {}", username);
-	       return user;
-	  }
+        UserEntity user = urepo.findByUsername(username);
+        if (user == null) {
+            logger.warn("User not found with username: {}", username);
+            throw new RuntimeException("User not found");
+        }
+    
+        if (!user.getPassword().equals(password)) { // Note: In production, use proper password hashing
+            logger.warn("Invalid password for username: {}", username);
+            throw new RuntimeException("Invalid password");
+        }
+    
+        logger.info("User authenticated: {}", username);
+    
+        // Check and create default daily quests if not already present
+        dailyQuestService.createDefaultDailyQuestsForUser(user);
+    
+        return user;
+    }
 	  
 	  //UsernameExistence
 	  public boolean existsByUsername(String username) {
