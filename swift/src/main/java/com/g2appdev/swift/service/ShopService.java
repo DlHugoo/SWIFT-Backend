@@ -39,7 +39,7 @@ public class ShopService {
 			shop.setItemUrl(newShopDetails.getItemUrl());
 
 		} catch (NoSuchElementException nex) {
-			throw new NameNotFoundException("Shop not found");
+			throw new NameNotFoundException("Item not found");
 		} finally {
 			return srepo.save(shop);
 		}

@@ -1,9 +1,16 @@
 package com.g2appdev.swift.entity;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class ShopEntity {
@@ -14,11 +21,10 @@ public class ShopEntity {
 	private String itemName;
 	private int itemCost;
 	private String itemUrl;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "item", orphanRemoval = true, cascade = CascadeType.ALL)
+	@JsonManagedReference(value = "item-reference")
+	private List<InventoryEntity> inventory;
 
-	/*
-	 * @ManyToMany(mappedBy = "items")
-	 * private Set<InventoryEntity> inventories;
-	 */
 	public ShopEntity() {
 
 	}
@@ -60,4 +66,13 @@ public class ShopEntity {
 	public void setItemUrl(String itemUrl) {
 		this.itemUrl = itemUrl;
 	}
+
+	public List<InventoryEntity> getInventory() {
+		return inventory;
+	}
+
+	public void setInventory(List<InventoryEntity> inventory) {
+		this.inventory = inventory;
+	}
+
 }

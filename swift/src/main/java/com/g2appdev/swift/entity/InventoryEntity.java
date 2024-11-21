@@ -1,55 +1,56 @@
 package com.g2appdev.swift.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class InventoryEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int inventoryId;
-	
-	private String itemList;
-	private int totalCoins;
-	
-	/*@ManyToMany
-	@JoinTable(
-	        name = "inventory_shop_items",
-	        joinColumns = @JoinColumn(name = "inventory_id"),
-	        inverseJoinColumns = @JoinColumn(name = "shop_id")
-	    )
-	 private Set<ShopEntity> items;*/
+
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JsonBackReference(value = "user-reference")
+	@JoinColumn(name = "userID")
+	private UserEntity user;
+
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JsonBackReference(value = "item-reference")
+	@JoinColumn(name = "itemID")
+	private ShopEntity item;
+
 	public InventoryEntity() {
-		
 	}
-	public InventoryEntity(int inventoryId, String itemList, int totalCoins) {
+
+	public InventoryEntity(int inventoryId) {
 		super();
 		this.inventoryId = inventoryId;
-		this.itemList=itemList;
-		this.totalCoins = totalCoins;
-		
 	}
+
 	public int getInventoryId() {
 		return inventoryId;
 	}
-	public String getItemList() {
-		return itemList;
+
+	public UserEntity getUser() {
+		return user;
 	}
-	public void setItemList(String itemList) {
-		this.itemList = itemList;
+
+	public void setUser(UserEntity user) {
+		this.user = user;
 	}
-	public int getTotalCoins() {
-		return totalCoins;
+
+	public ShopEntity getItem() {
+		return item;
 	}
-	public void setTotalCoins(int totalCoins) {
-		this.totalCoins = totalCoins;
+
+	public void setItem(ShopEntity item) {
+		this.item = item;
 	}
-	/*public Set<ShopEntity> getItems() {
-		return items;
-	}
-	public void setItems(Set<ShopEntity> items) {
-		this.items = items;
-	}*/
 }
