@@ -112,12 +112,21 @@ public class InventoryService {
 			defaultItem.setItemName("Default");
 			defaultItem.setItemCost(0);
 			defaultItem.setItemUrl("theme.png");
-
-			// Associate the item with the inventory
 			defaultInventory.setItem(defaultItem);
-
+			// Associate the item with the inventor
 			// Save the inventory to the repository
 			irepo.save(defaultInventory);
 		}
+
+	}
+
+	public InventoryEntity getDefaultInventoryForUser(UserEntity user) {
+		return irepo.findByUser(user).stream()
+				.findFirst()
+				.orElseGet(() -> {
+					InventoryEntity newInventory = new InventoryEntity();
+					newInventory.setUser(user);
+					return irepo.save(newInventory);
+				});
 	}
 }
