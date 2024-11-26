@@ -97,7 +97,7 @@ public class InventoryService {
 
 	public void createDefaultInventoryForUser(UserEntity user) {
 		// Check if the default item already exists in the shop
-		ShopEntity defaultItem = itrepo.findById(5).orElse(null);
+		ShopEntity defaultItem = itrepo.findByItemName("Default").orElse(null);
 
 		if (defaultItem == null) {
 			// Create the default item if it doesn't exist
@@ -111,7 +111,8 @@ public class InventoryService {
 		// Check if the user already has the default inventory
 		List<InventoryEntity> existingInventory = irepo.findByUser(user);
 		boolean hasDefaultInventory = existingInventory.stream()
-				.anyMatch(inventory -> inventory.getItem().getItemId() == 5);
+				.anyMatch(inventory -> "Default".equals(inventory.getItem().getItemName())); // Use .equals() for
+																								// comparison
 
 		if (!hasDefaultInventory) {
 			// Create a new inventory for the user with the default item
