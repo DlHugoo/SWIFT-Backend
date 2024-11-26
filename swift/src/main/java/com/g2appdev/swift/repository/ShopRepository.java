@@ -8,4 +8,6 @@ import com.g2appdev.swift.entity.ShopEntity;
 @Repository
 public interface ShopRepository extends JpaRepository<ShopEntity, Integer> {
 	public ShopRepository findByitemName(String itemName);
+
+	boolean existsByItemName(String itemName);
 }

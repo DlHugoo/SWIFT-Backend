@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.g2appdev.swift.dto.UserDTO;
-import com.g2appdev.swift.entity.InventoryEntity;
+
 import com.g2appdev.swift.entity.UserEntity;
 import com.g2appdev.swift.repository.UserRepository;
 
@@ -127,8 +127,7 @@ public class UserService {
 		// Create default daily quests for the new user
 		dailyQuestService.createDefaultDailyQuestsForUser(savedUser);
 		inventoryService.createDefaultInventoryForUser(savedUser);
-		InventoryEntity defaultInventory = inventoryService.getDefaultInventoryForUser(savedUser);
-		shopService.createDefaultShopForInventory(defaultInventory);
+
 		return savedUser;
 	}
 
@@ -149,8 +148,7 @@ public class UserService {
 		// Check and create default daily quests if not already present
 		dailyQuestService.createDefaultDailyQuestsForUser(user);
 		inventoryService.createDefaultInventoryForUser(user);
-		InventoryEntity defaultInventory = inventoryService.getDefaultInventoryForUser(user);
-		shopService.createDefaultShopForInventory(defaultInventory);
+
 		return user;
 	}
 

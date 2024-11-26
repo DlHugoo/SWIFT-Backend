@@ -120,13 +120,4 @@ public class InventoryService {
 
 	}
 
-	public InventoryEntity getDefaultInventoryForUser(UserEntity user) {
-		return irepo.findByUser(user).stream()
-				.findFirst()
-				.orElseGet(() -> {
-					InventoryEntity newInventory = new InventoryEntity();
-					newInventory.setUser(user);
-					return irepo.save(newInventory);
-				});
-	}
 }
