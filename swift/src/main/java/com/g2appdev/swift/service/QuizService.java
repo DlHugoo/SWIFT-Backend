@@ -14,8 +14,6 @@ import com.g2appdev.swift.repository.FlashcardSetRepository;
 import com.g2appdev.swift.repository.QuizRepository;
 import com.g2appdev.swift.repository.UserRepository;
 
-import jakarta.transaction.Transactional;
-
 @Service
 public class QuizService {
 
@@ -86,16 +84,19 @@ public class QuizService {
         return qrepo.save(quiz);
     }
 
-    // Method to delete a quiz by ID
-    @Transactional
     public String deleteQuiz(int quiz_id) {
         if (qrepo.existsById(quiz_id)) {
-            qrepo.deleteById(quiz_id);
+            QuizEntity quiz = qrepo.findById(quiz_id).orElse(null);
+            if (quiz != null) {
+                quiz.setFlashcardSet(null); // Detach the flashcard set
+                qrepo.delete(quiz);
+            }
             return "Quiz record successfully deleted";
         } else {
             return "Quiz with ID " + quiz_id + " not found!";
         }
     }
+    
 
 public List<QuizEntity> getFlashcardsByUserId(int userId) {
     // Check if the user exists
