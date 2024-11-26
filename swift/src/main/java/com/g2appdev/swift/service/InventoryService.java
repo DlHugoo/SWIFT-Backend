@@ -96,28 +96,30 @@ public class InventoryService {
 	}
 
 	public void createDefaultInventoryForUser(UserEntity user) {
-		// Check if the default inventory already exists for the user
-		List<InventoryEntity> existingInventory = irepo.findByUser(user);
-		boolean hasDefaultInventory = existingInventory.stream()
-				.anyMatch(inventory -> inventory.getItem().getItemId() == 1); // Check for itemId = 1
+		// Check if the default item already exists in the shop
+		ShopEntity defaultItem = itrepo.findById(5).orElse(null);
 
-		// Create the default inventory if it does not exist
-		if (!hasDefaultInventory) {
-			InventoryEntity defaultInventory = new InventoryEntity();
-
-			defaultInventory.setUser(user);
-
-			// Create a default item with itemId = 1
-			ShopEntity defaultItem = new ShopEntity();
+		if (defaultItem == null) {
+			// Create the default item if it doesn't exist
+			defaultItem = new ShopEntity();
 			defaultItem.setItemName("Default");
 			defaultItem.setItemCost(0);
 			defaultItem.setItemUrl("theme.png");
+			itrepo.save(defaultItem);
+		}
 
-			// Associate the item with the inventory
-			defaultInventory.setItem(defaultItem);
+		// Check if the user already has the default inventory
+		List<InventoryEntity> existingInventory = irepo.findByUser(user);
+		boolean hasDefaultInventory = existingInventory.stream()
+				.anyMatch(inventory -> inventory.getItem().getItemId() == 5);
 
-			// Save the inventory to the repository
+		if (!hasDefaultInventory) {
+			// Create a new inventory for the user with the default item
+			InventoryEntity defaultInventory = new InventoryEntity();
+			defaultInventory.setUser(user);
+			defaultInventory.setItem(defaultItem); // Associate with the existing default item
 			irepo.save(defaultInventory);
 		}
 	}
+
 }
