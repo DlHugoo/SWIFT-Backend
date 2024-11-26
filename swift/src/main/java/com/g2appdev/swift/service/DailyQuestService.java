@@ -3,14 +3,14 @@ package com.g2appdev.swift.service;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import javax.naming.NameNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.g2appdev.swift.entity.DailyQuestEntity;
+//import com.g2appdev.swift.entity.TaskEntity;
 import com.g2appdev.swift.entity.UserEntity;
 import com.g2appdev.swift.repository.DailyQuestRepository;
+import com.g2appdev.swift.repository.TaskRepository;
 import com.g2appdev.swift.repository.UserRepository;
 
 @Service
@@ -20,105 +20,95 @@ public class DailyQuestService {
 
     @Autowired
     UserRepository urepo;
-    
+
+    @Autowired
+    TaskRepository trepo; // Repository for tasks
+
     public DailyQuestService() {
         super();
     }
-    
-    //Create of CRUD
+
+    // Create a new Daily Quest Record
     public DailyQuestEntity postDailyQuestRecord(DailyQuestEntity dailyQuest) {
         if (dailyQuest.getUser() == null) {
             throw new IllegalArgumentException("User cannot be null.");
         }
         UserEntity user = urepo.findById(dailyQuest.getUser().getUserID())
-                .orElseThrow(() -> new NoSuchElementException("DailyQ Quest with ID " + dailyQuest.getUser().getUserID() + " does not exist."));
-                
+                .orElseThrow(() -> new NoSuchElementException("User with ID " + dailyQuest.getUser().getUserID() + " does not exist."));
+
         dailyQuest.setUser(user);
         return drepo.save(dailyQuest);
     }
-        
-    //Read of CRUD 
-    public List<DailyQuestEntity> getAllDailyQuest(){
+
+    // Read all Daily Quests
+    public List<DailyQuestEntity> getAllDailyQuest() {
         return drepo.findAll();
     }
-    
-    //Read by User ID
+
+    // Read Daily Quests by User ID
     public List<DailyQuestEntity> getDailyQuestByUserID(int userID) {
         UserEntity user = urepo.findById(userID)
                 .orElseThrow(() -> new NoSuchElementException("User with ID " + userID + " does not exist."));
         return drepo.findByUser(user);
     }
-    
-    //Update of CRUD
-    @SuppressWarnings("finally")
+
+    // Update a Daily Quest Record
     public DailyQuestEntity putDailyQuestDetails(int id, DailyQuestEntity newDailyQuestDetails) {
-        DailyQuestEntity dailyQuest = new DailyQuestEntity();
-            
-        try {
-            dailyQuest = drepo.findById(id).get();
-                
-            dailyQuest.setTitle(newDailyQuestDetails.getTitle());
-            dailyQuest.setDescription(newDailyQuestDetails.getDescription());
-            dailyQuest.setStatus(newDailyQuestDetails.getStatus());
-            dailyQuest.setCoinsEarned(newDailyQuestDetails.getCoinsEarned());
-        }catch(NoSuchElementException nex) {
-            throw new NameNotFoundException("Daily Quest "+ id + " not found");
-        }finally {
-            return drepo.save(dailyQuest);
-        }
-    }
-    
-    //Delete of CRUD
-    @SuppressWarnings("unused")
-    public String deleteDailyQuest(int id) {
-        String msg = "";
-        
-        if(drepo.findById(id) != null) {
-            drepo.deleteById(id);
-            msg = "Daily Quest Record successfully deleted";
-        }else
-            msg = id + " NOT found!";
-        return msg;
+        DailyQuestEntity dailyQuest = drepo.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Daily Quest with ID " + id + " not found"));
+
+        dailyQuest.setTitle(newDailyQuestDetails.getTitle());
+        dailyQuest.setDescription(newDailyQuestDetails.getDescription());
+        dailyQuest.setStatus(newDailyQuestDetails.getStatus());
+        dailyQuest.setCoinsEarned(newDailyQuestDetails.getCoinsEarned());
+
+        return drepo.save(dailyQuest);
     }
 
-    public void createDefaultDailyQuestsForUser(UserEntity user) {
-        // Check if default quests are already present
-        List<DailyQuestEntity> existingQuests = drepo.findByUser(user);
-        
-        // To determine if default quests are already created for the user
-        boolean hasLoginQuest = existingQuests.stream().anyMatch(quest -> "Log in".equals(quest.getTitle()));
-        boolean hasTodosQuest = existingQuests.stream().anyMatch(quest -> "To Do's".equals(quest.getTitle()));
-        boolean hasQuizzesQuest = existingQuests.stream().anyMatch(quest -> "Quizzes".equals(quest.getTitle()));
-    
-        // Create missing quests
-        if (!hasLoginQuest) {
-            DailyQuestEntity loginQuest = new DailyQuestEntity();
-            loginQuest.setTitle("Log in");
-            loginQuest.setDescription("Log in today");
-            loginQuest.setStatus("Pending");
-            loginQuest.setCoinsEarned(30);
-            loginQuest.setUser(user);
-            drepo.save(loginQuest);
+    // Delete a Daily Quest Record
+    public String deleteDailyQuest(int id) {
+        if (drepo.existsById(id)) {
+            drepo.deleteById(id);
+            return "Daily Quest Record successfully deleted";
+        } else {
+            return id + " NOT found!";
         }
-    
+    }
+
+    // Create Default Daily Quests for a User
+    public void createDefaultDailyQuestsForUser(UserEntity user) {
+        List<DailyQuestEntity> existingQuests = drepo.findByUser(user);
+
+        boolean hasTodosQuest = existingQuests.stream().anyMatch(quest -> "Complete 5 to do's today".equals(quest.getTitle()));
+
         if (!hasTodosQuest) {
             DailyQuestEntity todosQuest = new DailyQuestEntity();
-            todosQuest.setTitle("To Do's");
+            todosQuest.setTitle("Complete 5 to do's today");
             todosQuest.setDescription("Complete 5 to do's today");
-            todosQuest.setStatus("Pending");
+            todosQuest.setStatus("incomplete"); // Default status is incomplete
             todosQuest.setCoinsEarned(30);
             todosQuest.setUser(user);
             drepo.save(todosQuest);
         }
+    }
+
+    public void updateQuestStatusBasedOnToDoCompletion(int userID) {
+        UserEntity user = urepo.findById(userID)
+                .orElseThrow(() -> new NoSuchElementException("User with ID " + userID + " does not exist."));
     
-        if (!hasQuizzesQuest) {
-            DailyQuestEntity quizzesQuest = new DailyQuestEntity();
-            quizzesQuest.setTitle("Quizzes");
-            quizzesQuest.setDescription("Complete 2 Flashcard Quiz today");
-            quizzesQuest.setStatus("Pending");
-            quizzesQuest.setCoinsEarned(50);
-            quizzesQuest.setUser(user);
-            drepo.save(quizzesQuest);
+        // Find the "Complete 5 to do's today" quest
+        DailyQuestEntity todosQuest = drepo.findByUser(user).stream()
+                .filter(quest -> "Complete 5 to do's today".equals(quest.getTitle()))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Complete 5 to do's today quest not found"));
+    
+        // Count completed tasks for the user
+        long completedTasks = trepo.countByUserAndStatus(user, true);  // Count tasks with status as `true` (completed)
+    
+        // If 5 tasks are completed, mark the quest as complete
+        if (completedTasks >= 5 && "incomplete".equals(todosQuest.getStatus())) {
+            todosQuest.setStatus("complete");
+            drepo.save(todosQuest);
         }
     }
 }
