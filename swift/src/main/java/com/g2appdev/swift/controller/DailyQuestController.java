@@ -51,4 +51,11 @@ public class DailyQuestController {
         dserv.updateQuestStatusBasedOnToDoCompletion(userID);
         return "Quest status updated based on task completion.";
     }
+
+    // Update Quest Status for Login
+    @PutMapping("/updateLoginQuestStatus/{userID}")
+    public String updateLoginQuestStatus(@PathVariable int userID) {
+        dserv.updateQuestStatusForLogin(userID);
+        return "Login quest status updated.";
+    }
 }
