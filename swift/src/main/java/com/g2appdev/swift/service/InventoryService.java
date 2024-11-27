@@ -2,6 +2,7 @@ package com.g2appdev.swift.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -121,6 +122,38 @@ public class InventoryService {
 			defaultInventory.setItem(defaultItem); // Associate with the existing default item
 			irepo.save(defaultInventory);
 		}
+	}
+
+	public void addItemToInventory(int userId, int itemId) {
+		// Retrieve user and throw exception if not found
+		UserEntity user = urepo.findById(userId)
+				.orElseThrow(() -> new RuntimeException("User not found"));
+
+		// Retrieve item and throw exception if not found
+		ShopEntity item = itrepo.findById(itemId)
+				.orElseThrow(() -> new RuntimeException("Item not found"));
+
+		// Check if the user already owns the item
+		boolean itemAlreadyOwned = irepo.existsByUserAndItem_ItemName(user, item.getItemName());
+		if (itemAlreadyOwned) {
+			throw new RuntimeException("Item already purchased: " + item.getItemName());
+		}
+
+		// Add the item to the inventory
+		InventoryEntity inventoryEntity = new InventoryEntity();
+		inventoryEntity.setUser(user);
+		inventoryEntity.setItem(item);
+
+		irepo.save(inventoryEntity);
+	}
+
+	public List<ShopEntity> getPurchasedItemsByUserID(int userID) {
+		UserEntity user = urepo.findById(userID)
+				.orElseThrow(() -> new NoSuchElementException("User with ID " + userID + " does not exist."));
+
+		return irepo.findByUser(user).stream()
+				.map(InventoryEntity::getItem)
+				.collect(Collectors.toList());
 	}
 
 }

@@ -18,4 +18,6 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, Inte
     List<InventoryEntity> findByUser(UserEntity user);
 
     List<InventoryEntity> findByItemAndUser(ShopEntity item, UserEntity user);
+
+    boolean existsByUserAndItem_ItemName(UserEntity user, String itemName);
 }

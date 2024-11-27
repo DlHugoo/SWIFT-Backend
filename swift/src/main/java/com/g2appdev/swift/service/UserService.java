@@ -119,7 +119,7 @@ public class UserService {
 		newUser.setUsername(userDTO.getUsername());
 		newUser.setEmail(userDTO.getEmail());
 		newUser.setPassword(userDTO.getPassword()); // Use password hashing in production
-		newUser.setCoinBalance(0); // Initial progress
+		newUser.setCoinBalance(1000); // Initial progress
 
 		logger.info("Registering new user: {}", newUser.getUsername());
 		UserEntity savedUser = urepo.save(newUser);
@@ -160,6 +160,12 @@ public class UserService {
 	// Method to check if email already exists
 	public boolean existsByEmail(String email) {
 		return urepo.existsByEmail(email);
+	}
+
+	public int getCoinBalanceByUserId(int userID) {
+		return urepo.findById(userID)
+				.map(UserEntity::getCoinBalance)
+				.orElseThrow(() -> new RuntimeException("User not found with ID: " + userID));
 	}
 
 }
