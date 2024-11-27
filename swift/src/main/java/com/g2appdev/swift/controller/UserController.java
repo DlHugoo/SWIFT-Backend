@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -67,7 +68,8 @@ public class UserController {
             if (newUserDetails.getPassword() != null && !newUserDetails.getPassword().isEmpty()) {
                 if (!isValidPassword(newUserDetails.getPassword())) {
                     Map<String, String> error = new HashMap<>();
-                    error.put("error", "Password must be at least 8 characters long and contain at least one special character.");
+                    error.put("error",
+                            "Password must be at least 8 characters long and contain at least one special character.");
                     return ResponseEntity.badRequest().body(error);
                 }
             }
@@ -103,7 +105,8 @@ public class UserController {
             // Validate password format
             if (!isValidPassword(userDTO.getPassword())) {
                 Map<String, String> error = new HashMap<>();
-                error.put("error", "Password must be at least 8 characters long and contain at least one special character.");
+                error.put("error",
+                        "Password must be at least 8 characters long and contain at least one special character.");
                 return ResponseEntity.badRequest().body(error);
             }
 
@@ -128,34 +131,35 @@ public class UserController {
     }
 
     // Login Endpoint using LoginRequest
-@PostMapping("/login")
-public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
-    try {
-        // Authenticate the user based on LoginRequest (username and password)
-        UserEntity user = userv.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
+        try {
+            // Authenticate the user based on LoginRequest (username and password)
+            UserEntity user = userv.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
 
-        // Generate the JWT token
-        String token = jwtUtils.generateToken(user.getUsername());
+            // Generate the JWT token
+            String token = jwtUtils.generateToken(user.getUsername());
 
-        // Update the daily quest for logging in
-        dailyQuestService.updateQuestStatusForLogin(user.getUserID()); // This ensures the login quest is marked complete
+            // Update the daily quest for logging in
+            dailyQuestService.updateQuestStatusForLogin(user.getUserID()); // This ensures the login quest is marked
+                                                                           // complete
 
-        // Prepare response with token and user details
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Login successful");
-        response.put("token", token);
-        response.put("userId", user.getUserID());
-        response.put("username", user.getUsername());
-        response.put("email", user.getEmail());
-        response.put("coinBalance", user.getCoinBalance());
+            // Prepare response with token and user details
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Login successful");
+            response.put("token", token);
+            response.put("userId", user.getUserID());
+            response.put("username", user.getUsername());
+            response.put("email", user.getEmail());
+            response.put("coinBalance", user.getCoinBalance());
 
-        return ResponseEntity.ok(response);
-    } catch (RuntimeException e) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", e.getMessage());
-        return ResponseEntity.badRequest().body(error);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
     }
-}
 
     // Check if Username Exists Endpoint
     @GetMapping("/exists")
@@ -173,5 +177,16 @@ public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
         Map<String, Boolean> response = new HashMap<>();
         response.put("exists", exists);
         return ResponseEntity.ok(response);
+    }
+
+    // getting coinbalance
+    @GetMapping("/{userID}/coin-balance")
+    public ResponseEntity<Integer> getCoinBalance(@PathVariable int userID) {
+        try {
+            int coinBalance = userv.getCoinBalanceByUserId(userID);
+            return ResponseEntity.ok(coinBalance);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0); // Return 0 or an appropriate error response
+        }
     }
 }

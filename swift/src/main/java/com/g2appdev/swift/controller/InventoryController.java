@@ -3,9 +3,11 @@ package com.g2appdev.swift.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.g2appdev.swift.entity.InventoryEntity;
+import com.g2appdev.swift.entity.ShopEntity;
 import com.g2appdev.swift.service.InventoryService;
 
 @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", methods = { RequestMethod.GET, RequestMethod.POST,
@@ -53,5 +55,21 @@ public class InventoryController {
 	@DeleteMapping("/deleteInventory/{inventoryId}")
 	public String deleteInventory(@PathVariable int inventoryId) {
 		return iserv.deleteInventory(inventoryId);
+	}
+
+	@PostMapping("/purchase")
+	public ResponseEntity<String> purchaseItem(@RequestParam int userId, @RequestParam int itemId) {
+		try {
+			iserv.addItemToInventory(userId, itemId);
+			return ResponseEntity.ok("Item added to inventory");
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	@GetMapping("/purchased/{userID}")
+	public ResponseEntity<List<ShopEntity>> getPurchasedItems(@PathVariable int userID) {
+		List<ShopEntity> items = iserv.getPurchasedItemsByUserID(userID);
+		return ResponseEntity.ok(items);
 	}
 }
