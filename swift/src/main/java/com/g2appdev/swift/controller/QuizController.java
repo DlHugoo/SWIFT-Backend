@@ -71,4 +71,20 @@ public class QuizController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user score: " + ex.getMessage());
         }
     }
+
+    // Endpoint to get quizzes associated with a specific user
+    @GetMapping("/getQuizzesByUserId/{userId}")
+    public List<QuizEntity> getQuizzesByUserId(@PathVariable int userId) {
+        return qserv.getQuizzesByUserId(userId);
+    }
+
+    @GetMapping("/getAverageScoreByUserId/{userId}")
+    public ResponseEntity<Double> getAverageScoreByUserId(@PathVariable int userId) {
+        try {
+            double averageScore = qserv.getAverageScoreByUserId(userId);
+            return ResponseEntity.ok(averageScore);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0.0);
+        }
+    }
 }

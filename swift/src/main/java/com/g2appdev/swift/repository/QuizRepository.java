@@ -26,4 +26,6 @@ public interface QuizRepository extends JpaRepository<QuizEntity, Integer>{
 	// Fetch quizzes answered by user (where userScore > 0)
     @Query("SELECT q FROM QuizEntity q WHERE q.flashcardset.user = :user AND q.userScore > 0")
     List<QuizEntity> findQuizzesAnsweredByUser(@Param("user") UserEntity user);
+
+	
 }
