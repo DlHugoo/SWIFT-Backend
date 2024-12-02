@@ -23,7 +23,7 @@ public class QuizService {
     @Autowired
     FlashcardSetRepository fsrepo;
 
-    	@Autowired
+    @Autowired
     UserRepository urepo;
 
     public QuizService() {
@@ -53,6 +53,25 @@ public class QuizService {
     // Method to calculate the total score for a quiz
     private int calculateTotalScore(List<QuizEntity.Question> questions) {
         return questions.stream().mapToInt(QuizEntity.Question::getScore).sum();
+    }
+
+    // Method to get quizzes associated with a user
+    public List<QuizEntity> getQuizzesByUserId(int userId) {
+        // Find the user by ID
+        UserEntity user = urepo.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with ID " + userId + " does not exist."));
+
+        // Find quizzes for the user by querying the FlashcardSet associated with the user
+        return qrepo.findByFlashcardset_User(user);
+    }
+
+    // Method to get analytics on quiz scores (e.g., average score across quizzes)
+    public double getAverageScoreByUserId(int userId) {
+        List<QuizEntity> quizzes = getQuizzesByUserId(userId);
+        return quizzes.stream()
+            .mapToInt(QuizEntity::getUserScore)
+            .average()
+            .orElse(0.0);
     }
 
     // Method to get all quizzes
