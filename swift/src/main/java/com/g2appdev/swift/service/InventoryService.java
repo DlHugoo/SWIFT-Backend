@@ -1,10 +1,13 @@
 package com.g2appdev.swift.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.g2appdev.swift.entity.InventoryEntity;
@@ -124,7 +127,7 @@ public class InventoryService {
 		}
 	}
 
-	public void addItemToInventory(int userId, int itemId) {
+	public ResponseEntity<?> addItemToInventory(int userId, int itemId) {
 		// Retrieve user and throw exception if not found
 		UserEntity user = urepo.findById(userId)
 				.orElseThrow(() -> new RuntimeException("User not found"));
@@ -136,15 +139,33 @@ public class InventoryService {
 		// Check if the user already owns the item
 		boolean itemAlreadyOwned = irepo.existsByUserAndItem_ItemName(user, item.getItemName());
 		if (itemAlreadyOwned) {
-			throw new RuntimeException("Item already purchased: " + item.getItemName());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Item already purchased: " + item.getItemName());
 		}
+
+		// Check if the user has enough balance to purchase the item
+		if (user.getCoinBalance() < item.getItemCost()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("Not enough coins to purchase the item: " + item.getItemName());
+		}
+
+		// Deduct the item's cost from the user's coin balance
+		user.setCoinBalance(user.getCoinBalance() - item.getItemCost());
+		urepo.save(user); // Update the user entity with the new coin balance
 
 		// Add the item to the inventory
 		InventoryEntity inventoryEntity = new InventoryEntity();
 		inventoryEntity.setUser(user);
 		inventoryEntity.setItem(item);
 
-		irepo.save(inventoryEntity);
+		irepo.save(inventoryEntity); // Save the new inventory entry
+
+		// Return success response
+		return ResponseEntity.ok().body(new HashMap<String, Object>() {
+			{
+				put("success", true);
+				put("message", "Item successfully purchased!");
+			}
+		});
 	}
 
 	public List<ShopEntity> getPurchasedItemsByUserID(int userID) {
