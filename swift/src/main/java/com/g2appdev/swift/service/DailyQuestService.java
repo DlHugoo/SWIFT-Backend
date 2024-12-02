@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.g2appdev.swift.entity.DailyQuestEntity;
 import com.g2appdev.swift.entity.UserEntity;
+import com.g2appdev.swift.entity.QuizEntity;
 import com.g2appdev.swift.repository.DailyQuestRepository;
 import com.g2appdev.swift.repository.TaskRepository;
 import com.g2appdev.swift.repository.UserRepository;
+import com.g2appdev.swift.repository.QuizRepository;
 
 @Service
 public class DailyQuestService {
@@ -22,6 +24,9 @@ public class DailyQuestService {
 
     @Autowired
     TaskRepository trepo;
+
+    @Autowired
+    QuizRepository qrepo;
 
     public DailyQuestService() {
         super();
@@ -80,6 +85,7 @@ public class DailyQuestService {
 
         boolean hasTodosQuest = existingQuests.stream().anyMatch(quest -> "To Do's".equals(quest.getTitle()));
         boolean hasLoginQuest = existingQuests.stream().anyMatch(quest -> "Login".equals(quest.getTitle()));
+        boolean hasQuizQuest = existingQuests.stream().anyMatch(quest -> "Quiz".equals(quest.getTitle()));
 
         // Create "Complete 5 to do's today" quest
         if (!hasTodosQuest) {
@@ -102,6 +108,17 @@ public class DailyQuestService {
             loginQuest.setUser(user);
             drepo.save(loginQuest);
         }
+
+        // Create "Quiz" quest
+        if (!hasQuizQuest) {
+            DailyQuestEntity quizQuest = new DailyQuestEntity();
+            quizQuest.setTitle("Quiz");
+            quizQuest.setDescription("Answer at least one quiz today");
+            quizQuest.setStatus("incomplete"); // Default status is incomplete
+            quizQuest.setCoinsEarned(50);
+            quizQuest.setUser(user);
+            drepo.save(quizQuest);
+        }
     }
 
     // Update Quest Status Based on To Do Completion and Update Coins
@@ -116,7 +133,7 @@ public class DailyQuestService {
                 .orElseThrow(() -> new NoSuchElementException("Complete 5 to do's today quest not found"));
 
         // Count completed tasks for the user
-        long completedTasks = trepo.countByUserAndStatus(user, true);  // Count tasks with status as `true` (completed)
+        long completedTasks = trepo.countByUserAndStatus(user, true); // Count tasks with status as `true` (completed)
 
         // If 5 tasks are completed, mark the quest as complete and update user's coins
         if (completedTasks >= 5 && "incomplete".equals(todosQuest.getStatus())) {
@@ -147,6 +164,41 @@ public class DailyQuestService {
 
             // Update the user's coins
             user.setCoinBalance(user.getCoinBalance() + loginQuest.getCoinsEarned());
+            urepo.save(user);
+        }
+    }
+
+    // Check if a user has answered a quiz today
+    public boolean hasUserAnsweredQuizToday(int userID) {
+        UserEntity user = urepo.findById(userID)
+                .orElseThrow(() -> new NoSuchElementException("User with ID " + userID + " does not exist."));
+
+        // Fetch quizzes where userScore > 0
+        List<QuizEntity> answeredQuizzes = qrepo.findByFlashcardset_User(user);
+        return answeredQuizzes.stream().anyMatch(quiz -> quiz.getUserScore() > 0);
+    }
+
+    // Update Quest Status for Quiz Completion
+    public void updateQuizQuestStatus(int userID) {
+        UserEntity user = urepo.findById(userID)
+                .orElseThrow(() -> new NoSuchElementException("User with ID " + userID + " does not exist."));
+
+        // Find the "Quiz" quest
+        DailyQuestEntity quizQuest = drepo.findByUser(user).stream()
+                .filter(quest -> "Quiz".equals(quest.getTitle()))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Quiz quest not found"));
+
+        // Check if the user has answered any quiz today
+        boolean hasAnsweredQuizToday = hasUserAnsweredQuizToday(userID);
+
+        // If the quest is incomplete and user answered a quiz, mark it complete
+        if (hasAnsweredQuizToday && "incomplete".equals(quizQuest.getStatus())) {
+            quizQuest.setStatus("complete");
+            drepo.save(quizQuest);
+
+            // Update the user's coins
+            user.setCoinBalance(user.getCoinBalance() + quizQuest.getCoinsEarned());
             urepo.save(user);
         }
     }
