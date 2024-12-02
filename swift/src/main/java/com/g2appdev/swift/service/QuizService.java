@@ -114,5 +114,19 @@ public List<QuizEntity> getFlashcardsByUserId(int userId) {
 
     return flashcards;
 }
+
+public String updateUserScore(int quizId, int userScore) {
+    // Fetch the quiz by ID
+    QuizEntity quiz = qrepo.findById(quizId)
+            .orElseThrow(() -> new NoSuchElementException("Quiz with ID " + quizId + " does not exist."));
+
+    // Update the userScore in the QuizEntity
+    quiz.setUserScore(userScore);
+
+    // Save the updated QuizEntity
+    qrepo.save(quiz);
+
+    return "User score updated successfully!";
+}
     
 }

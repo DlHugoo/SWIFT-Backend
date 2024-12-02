@@ -1,8 +1,11 @@
 package com.g2appdev.swift.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 //import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.g2appdev.swift.dto.UpdateUserScoreRequest;
 import com.g2appdev.swift.entity.QuizEntity;
 import com.g2appdev.swift.service.QuizService;
 
@@ -52,5 +57,18 @@ public class QuizController {
     @GetMapping("/getQuizByUserId/{userId}")
     public List<QuizEntity> getFlashcardsByUserId(@PathVariable int userId) {
         return qserv.getFlashcardsByUserId(userId);
+    }
+    
+        // Endpoint to update user score
+    @PostMapping("/update-user-score")
+    public ResponseEntity<String> updateUserScore(@RequestBody UpdateUserScoreRequest request) {
+        try {
+            String response = qserv.updateUserScore(request.getQuizId(), request.getUserScore());
+            return ResponseEntity.ok(response);
+        } catch (NoSuchElementException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user score: " + ex.getMessage());
+        }
     }
 }

@@ -31,6 +31,7 @@ public class QuizEntity {
 
     private String title;
     private int totalScore;
+    private int userScore = 0; // New attribute initialized to zero
 
     @ElementCollection
     private List<Question> questions;
@@ -81,6 +82,15 @@ public class QuizEntity {
 
     public void setTotalScore(int totalScore){
         this.totalScore = totalScore;
+    }
+
+    // Getter and Setter for userScore
+    public int getUserScore() {
+        return userScore;
+    }
+
+    public void setUserScore(int userScore) {
+        this.userScore = userScore;
     }
 
     // Helper method to calculate total score
