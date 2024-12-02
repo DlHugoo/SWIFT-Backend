@@ -58,4 +58,11 @@ public class DailyQuestController {
         dserv.updateQuestStatusForLogin(userID);
         return "Login quest status updated.";
     }
+
+    // Update Quest Status for Quiz
+    @PutMapping("/updateQuizQuestStatus/{userID}")
+    public String updateQuizQuestStatus(@PathVariable int userID) {
+        dserv.updateQuizQuestStatus(userID);
+        return "Quiz quest status updated.";
+    }
 }
