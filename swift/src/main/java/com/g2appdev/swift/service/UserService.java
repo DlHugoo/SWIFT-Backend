@@ -119,7 +119,7 @@ public class UserService {
 		newUser.setUsername(userDTO.getUsername());
 		newUser.setEmail(userDTO.getEmail());
 		newUser.setPassword(userDTO.getPassword()); // Use password hashing in production
-		newUser.setCoinBalance(1000); // Initial progress
+		newUser.setCoinBalance(100); // Initial progress
 
 		logger.info("Registering new user: {}", newUser.getUsername());
 		UserEntity savedUser = urepo.save(newUser);
