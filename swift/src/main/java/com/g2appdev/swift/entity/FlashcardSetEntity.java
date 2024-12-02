@@ -16,8 +16,7 @@ public class FlashcardSetEntity {
 	@OneToOne(mappedBy = "flashcardset", cascade = CascadeType.PERSIST)
 	private QuizEntity quiz;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "flashcardset", orphanRemoval = true,
-	cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "flashcardset", cascade = CascadeType.ALL)
 	private List<FlashcardEntity> flashcard;
 
 	@ManyToOne(cascade = CascadeType.PERSIST)

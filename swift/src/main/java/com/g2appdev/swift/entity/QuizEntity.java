@@ -12,7 +12,7 @@ public class QuizEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int quiz_id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "set_id")
     private FlashcardSetEntity flashcardset;
 
