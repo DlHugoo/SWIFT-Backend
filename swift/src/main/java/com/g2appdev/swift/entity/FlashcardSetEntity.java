@@ -2,7 +2,16 @@ package com.g2appdev.swift.entity;
 
 import java.util.List;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class FlashcardSetEntity {
@@ -13,7 +22,7 @@ public class FlashcardSetEntity {
     private String title;
     private String description;
 
-	@OneToOne(mappedBy = "flashcardset", cascade = CascadeType.PERSIST)
+	@OneToOne(mappedBy = "flashcardset", cascade = CascadeType.ALL)
 	private QuizEntity quiz;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "flashcardset", cascade = CascadeType.ALL)
