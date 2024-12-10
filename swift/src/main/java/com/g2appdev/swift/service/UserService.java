@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.g2appdev.swift.dto.UserDTO;
-
 import com.g2appdev.swift.entity.UserEntity;
 import com.g2appdev.swift.repository.UserRepository;
 
@@ -78,7 +77,7 @@ public class UserService {
 				user.setPassword(newUserDetails.getPassword());
 			}
 
-			user.setCoinBalance(newUserDetails.getCoinBalance());
+			//user.setCoinBalance(newUserDetails.getCoinBalance());
 
 		} finally {
 			return urepo.save(user);
